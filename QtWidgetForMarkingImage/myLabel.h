@@ -25,6 +25,7 @@ class myLabel :
 	QSize originalSize;
 	QSize scaledSize;
 	QSize oldSize;
+
 	double scalCoef_W;
 	double scalCoef_H;
 	Qt::AspectRatioMode _aspectRotMod;

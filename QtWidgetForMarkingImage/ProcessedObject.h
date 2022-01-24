@@ -12,42 +12,17 @@
 class ProcessedObject
 {
 protected:
-	QString fileName_;
-	QString dirName_;
-	QPixmap originalPixmap_;
-	cv::Mat originalMat_;
-	QPixmap correctPixmap_;
-	cv::Mat correctMat_;
 	std::vector<QtProcessedArea> processedArears_;
-	bool imageCorrected_;
-	bool imageIsNull_;
-	QString programName_;
 
 public:
 	ProcessedObject();
-	ProcessedObject(QString inputFileName, QString inputDirName, cv::Mat inputMat, QPixmap inputPixmap, QString programName, bool imageIsNull = false);
+	ProcessedObject(bool imageIsNull);
 	ProcessedObject(const ProcessedObject& dep);
-	QString getFileName();
-	void setFileName(QString newFileName);
-	QString getDirName();
-	void setDirName(QString newDirName);
-	QPixmap getOriginalPixmap();
-	cv::Mat getOriginalMat();
-	QPixmap getCorrectPixmap();
-	cv::Mat getMat();
 	void setProcessedArears(std::vector<QtProcessedArea> *newProcessedAreas);
 	std::vector<QtProcessedArea>* getProcesArears();
-	void updateMat(cv::Mat newMat, QPixmap newPixmap);
 	ProcessedObject& operator=(const ProcessedObject& drop);
 	ProcessedObject& operator=(ProcessedObject&& drop);
-	bool imageCorrected();
-	bool imageIsNull();
-	void setFlagImageIsNull(bool imageIsNull);
-	QString getProgramName();
-	void setProgramName(QString newProgramName);
-	int loadImage();
-	void updateProcessedArears();
-	int computeComparsion(std::vector<QtProcessedArea>* const masterProcessedAreas);
+
 };
 
 #endif

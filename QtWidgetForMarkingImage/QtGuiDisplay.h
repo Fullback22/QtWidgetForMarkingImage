@@ -2,7 +2,6 @@
 
 #include <QWidget>
 #include "ui_QtGuiDisplay.h"
-#include <QTime>
 #include "qfiledialog.h"
 #include "myLabel.h"
 #include "ProcessedObject.h"
@@ -16,15 +15,9 @@
 class QtGuiDisplay : public QWidget
 {
 	Q_OBJECT
-
-	int delayUpdateFrame;;
-	QTime *updateImageTime;
 	cv::Mat tempImg;
 	QPixmap TempPixmap;
 	QCursor myCursor;
-	std::vector<QRect> roi;
-
-
 	ProcessedObject* activProcessedObj;
 
 	int activ_roi;
@@ -36,11 +29,11 @@ class QtGuiDisplay : public QWidget
 
 	bool changeActivArea;
 	void resizeEvent(QResizeEvent* event);
-	//bool addNewBrigthnesRect;
+
 	double activ_scaled;
 	double hor_scaled;
 	double vert_scaled;
-	bool setObj;
+
 	bool isProcessingActiv;
 	bool isZoomNow;
 	void setCursor_àorChangesTopBotton(double rotateAngel);
@@ -52,28 +45,27 @@ public:
 	~QtGuiDisplay();
 	void setSizeScrollBar();
 
-	void setActivProcessObj(ProcessedObject &activObj, bool master=true, int number=0);
+	//void setActivProcessObj(ProcessedObject &activObj, bool master=true, int number=0);
 	void setEanbleActivededRoi(bool activ);
-	void setEnableWidtsGrouBox(bool enable);
+	//void setEnableWidtsGrouBox(bool enable);
 	void setActiv(bool activ);
 	void setChangeActivArea(bool isChange);
-	void addBrightnesCorrectRect(bool isAdd);
 	void setChangesProcessedArears(bool isChang);
 
 	void draw_proceseArears();
-	void add_rect(int procesType);
+	void add_rect();
 	QRect getLabelRect();
 
 
 	bool isActiv();
 	bool getChageActivArea();
 	bool ProcessedIsActiv();
-	void updateFrame();
 
-	void setProcessObjStatus(bool isMaster);//0-Live 1-Master;
+
+
 	void updateProcessObj(ProcessedObject& activObj);
 	void setActivProcesArea(int activArea);
-	int getDelayUpdateFrame();
+
 	void setNewImage(cv::Mat const inputImg);
 private:
 	Ui::QtGuiDisplay ui;
@@ -87,19 +79,12 @@ public slots:
 	void slot_ZoomImg_In();
 	void slot_ZoomImg_Out();
 	void slot_ZoomImg_AllLabl();
-	void slot_SetDirToSave();
-	void slot_saveImg();
-	void slot_reNameImg(QString newFileName);
-	void slot_brighAreaDel();
+
 	void updateImg();
-	void slot_changeProcssActiv(int isActiv); //0-disenable 1-enable
-	void slot_updateTrigerDelay(int newDelay);
-	void slot_delUpdateImageTime();
+	//void slot_changeProcssActiv(int isActiv); //0-disenable 1-enable
+	
 signals:
-	void brightnesCorrectRectSet(bool isSet);
-	void clic_pb();
+	//void clic_pb();
 	void changeActivProcesArea(int newActiv);
-	void angelIsReset(int isReset);
-	void signal_updateFrame();
 	void getActivProcessArea();
 };

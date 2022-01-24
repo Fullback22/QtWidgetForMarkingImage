@@ -142,7 +142,7 @@ void QtWidgetForMarkingImage::slot_activateImage(int i)
 
 void QtWidgetForMarkingImage::slot_addRect()
 {
-    ui.widgetForImage->add_rect(1);//,ui.spinBox_classLabel->value()+2);
+    ui.widgetForImage->add_rect();//,ui.spinBox_classLabel->value()+2);
 }
 
 void QtWidgetForMarkingImage::slot_changeClassLabel(int value)
