@@ -425,7 +425,6 @@ void QtGuiDisplay::slot_mouseRelease()
 {
 	event_img = false;
 	change_roi = false;
-	//activProcessedObj->getProcesArears()[0][activ_roi].getRect()->setResizeType(NoResize);
 }
 
 void QtGuiDisplay::slot_ZoomImg_In()
@@ -433,7 +432,6 @@ void QtGuiDisplay::slot_ZoomImg_In()
 	if (!isZoomNow)
 	{
 		isZoomNow = true;
-		//emit clic_pb();
 		int dr_x, dr_y;
 		activ_scaled = ui.label_for_TempImg->scaledPixmap(1, dr_x, dr_y);
 		if (activ_scaled == 500)
@@ -465,7 +463,6 @@ void QtGuiDisplay::slot_ZoomImg_Out()
 	if (!isZoomNow)
 	{
 		isZoomNow = true;
-		//emit clic_pb();
 		ui.horSB_forTempImg->hide();
 		ui.verSB_forTempImg->hide();
 		int dr_x, dr_y;
@@ -500,7 +497,6 @@ void QtGuiDisplay::slot_ZoomImg_AllLabl()
 	if (!isZoomNow)
 	{
 		isZoomNow = true;
-		//emit clic_pb();
 		ui.horSB_forTempImg->hide();
 		ui.verSB_forTempImg->hide();
 		this->updateGeometry();
@@ -525,32 +521,6 @@ void QtGuiDisplay::slot_ZoomImg_AllLabl()
 	}
 }
 
-//void QtGuiDisplay::setActivProcessObj(ProcessedObject &activObj, bool master, int number)
-//{
-//	this->updateGeometry();
-//	activProcessedObj = &activObj;                  
-// 	ui.label_for_TempImg->setAlignment(Qt::AlignCenter);
-//	if (activProcessedObj->imageIsNull())
-//	{
-//		ui.label_for_TempImg->set_myPixmap(&QPixmap("NoImg.png"));
-//	}
-//	this->slot_ZoomImg_AllLabl();
-//	if (!activProcessedObj->imageIsNull())
-//	{
-//		ui.pushButt_ZoomDeduce->show();
-//		ui.pushButt_ZoomIncress->show();
-//		ui.pushButt_AllLabl->show();
-//		ui.label_Scale->show();
-//	}
-//	else
-//	{
-//		ui.pushButt_ZoomDeduce->hide();
-//		ui.pushButt_ZoomIncress->hide();
-//		ui.pushButt_AllLabl->hide();
-//		ui.label_Scale->hide();
-//	}
-//}
-
 void QtGuiDisplay::setEanbleActivededRoi(bool activ)
 {
 	if (activ)
@@ -562,24 +532,6 @@ void QtGuiDisplay::setEanbleActivededRoi(bool activ)
 		activatedRoi = false;
 	}
 }
-
-//void QtGuiDisplay::setEnableWidtsGrouBox(bool enable)
-//{
-//	if (enable)
-//	{
-//		ui.pushButt_ZoomDeduce->show();
-//		ui.pushButt_ZoomIncress->show();
-//		ui.pushButt_AllLabl->show();
-//		ui.label_Scale->show();
-//	}
-//	else
-//	{
-//		ui.pushButt_ZoomDeduce->hide();
-//		ui.pushButt_ZoomIncress->hide();
-//		ui.pushButt_AllLabl->hide();
-//		ui.label_Scale->hide();
-//	}
-//}
 
 void QtGuiDisplay::setActiv(bool activ)
 {
@@ -628,23 +580,17 @@ void QtGuiDisplay::draw_proceseArears()
 			penSize = 1;
 			if (activProcessedObj->getProcesArears()[0][i].isDraw())
 			{
-				QPen penBufer(Qt::red, ceil(penSize * penWeigth), Qt::DashLine);
-				//if ((activProcessedObj->getProcesArears()[0])[i].getAreaType() == 0)
-				{
-					ui.label_for_TempImg->draw_rect(activProcessedObj->getProcesArears()[0][i].getRect(), penBufer);
-					noDraw = false;
-				}
+				QPen penBufer(QBrush(activProcessedObj->getProcesArears()[0][i].getColor()), ceil(penSize * penWeigth), Qt::DashLine);
+				ui.label_for_TempImg->draw_rect(activProcessedObj->getProcesArears()[0][i].getRect(), penBufer);
+				noDraw = false;
 			}
 		}
 		if (activProcessedObj->getProcesArears()->size() > 0)
 		{
 			if (activProcessedObj->getProcesArears()[0][activProcesArea].isDraw())
 			{
-				QPen penBufer(Qt::red, ceil(2 * penWeigth), Qt::DashLine);
-				//if ((activProcessedObj->getProcesArears()[0])[activProcesArea].getAreaType() == 0)
-				{
-					ui.label_for_TempImg->draw_rect(activProcessedObj->getProcesArears()[0][activProcesArea].getRect(), penBufer);
-				}
+				QPen penBufer(QBrush(activProcessedObj->getProcesArears()[0][activProcesArea].getColor()), ceil(2 * penWeigth), Qt::DashLine);
+				ui.label_for_TempImg->draw_rect(activProcessedObj->getProcesArears()[0][activProcesArea].getRect(), penBufer);
 			}
 		}
 		
@@ -656,7 +602,7 @@ void QtGuiDisplay::draw_proceseArears()
 	}
 }
 
-void QtGuiDisplay::add_rect()
+void QtGuiDisplay::add_rect(int classLabel, QColor const *color)
 {
 	int w{ 0 };
 	int h{ 0 };
@@ -679,13 +625,23 @@ void QtGuiDisplay::add_rect()
 	int x{ ui.label_for_TempImg->size().width() / 2 };
 	int y{ ui.label_for_TempImg->size().height() / 2 };
 	ui.label_for_TempImg->toImgCoordinate_(x, y);
-
-	activProcessedObj->getProcesArears()[0].push_back(QtProcessedArea(QtRotateRect(QRect(x - w / 2, y - h / 2, w, h))));
+	activProcessedObj->getProcesArears()[0].push_back(QtProcessedArea(QtRotateRect(QRect(x - w / 2, y - h / 2, w, h)), classLabel, color));
 	
 	activProcessedObj->getProcesArears()[0][activProcesArea].setActiv(false);
 	activProcesArea = activProcessedObj->getProcesArears()[0].size() - 1;
 	activProcessedObj->getProcesArears()[0][activProcesArea].setActiv(true);
 	updateImg();
+}
+
+void QtGuiDisplay::deletActivRectangel()
+{
+	if (activProcessedObj->getProcesArears()[0].size() > 0)
+	{
+		activProcessedObj->getProcesArears()[0].erase(activProcessedObj->getProcesArears()[0].begin() + activProcesArea);
+		if (activProcesArea == activProcessedObj->getProcesArears()[0].size() && activProcesArea > 0)
+			--activProcesArea;
+		updateImg();
+	}
 }
 
 QRect QtGuiDisplay::getLabelRect()
@@ -707,23 +663,6 @@ void QtGuiDisplay::updateImg()
 		ui.label_for_TempImg->show_partImg();
 	}
 }
-
-//void QtGuiDisplay::slot_changeProcssActiv(int isActiv)
-//{
-//	if (isActiv == 0)
-//	{
-//		isProcessingActiv = 0;
-//	}
-//	else
-//	{
-//		isProcessingActiv = 1;
-//	}
-//	if (activ)
-//	{
-//		updateImg();
-//	}
-//}
-
 
 bool QtGuiDisplay::isActiv()
 {
@@ -761,6 +700,22 @@ void QtGuiDisplay::setNewImage(cv::Mat const inputImg)
 	ui.label_for_TempImg->update_myPixmap(QPixmap::fromImage(drPic));
 	slot_ZoomImg_AllLabl();
 	this->setSizeScrollBar();
+}
+
+void QtGuiDisplay::setNewClassLabel(int const classLabel, QColor const *color)
+{
+	activProcessedObj->getProcesArears()[0][activProcesArea].setClassLabel(classLabel);
+	activProcessedObj->getProcesArears()[0][activProcesArea].setColor(color);
+	updateImg();
+}
+
+void QtGuiDisplay::getClsaaRectangelAndLabel(std::vector<QRect>& rectangel, std::vector<int>& label)
+{
+	for (auto& element : activProcessedObj->getProcesArears()[0])
+	{
+		rectangel.push_back(element.getOriginalLimitRect());
+		label.push_back(element.getClassLabel());
+	}
 }
 
 

@@ -3,15 +3,19 @@
 QtProcessedArea::QtProcessedArea(QObject* parent)
 	: QObject(parent),
 	rect(QtRotateRect{}),
+	classLabel{0},
+	lineColor{nullptr},
 	activ(false),
 	draw(false)
 {
 	
 }
 
-QtProcessedArea::QtProcessedArea(QtRotateRect newRect, QObject* parent)
+QtProcessedArea::QtProcessedArea(QtRotateRect newRect, int const classLabel_, QColor const *color, QObject* parent)
 	: QObject(parent),
 	rect(newRect),
+	classLabel{ classLabel_ },
+	lineColor{ new QColor(*color) },
 	activ(true),
 	draw(true)
 {
@@ -21,6 +25,8 @@ QtProcessedArea::QtProcessedArea(QtRotateRect newRect, QObject* parent)
 QtProcessedArea::QtProcessedArea(const QtProcessedArea& drop)
 	:rect(drop.rect),
 	activ(drop.activ),
+	classLabel(drop.classLabel),
+	lineColor(drop.lineColor),
 	draw(drop.draw)
 {
 	
@@ -29,6 +35,8 @@ QtProcessedArea::QtProcessedArea(const QtProcessedArea& drop)
 QtProcessedArea::QtProcessedArea(QtProcessedArea&& drop):
 	rect(drop.rect),
 	activ(drop.activ),
+	classLabel(drop.classLabel),
+	lineColor(drop.lineColor),
 	draw(drop.draw)
 {
 }
@@ -103,6 +111,22 @@ bool QtProcessedArea::isDraw()
 	return draw;
 }
 
+int QtProcessedArea::getClassLabel() const
+{
+	return classLabel;
+}
+
+QColor QtProcessedArea::getColor() const
+{
+	return *lineColor;
+}
+
+void QtProcessedArea::setColor(QColor const* color) 
+{
+	delete lineColor;
+	lineColor = new QColor(*color);
+}
+
 QtRotateRect* QtProcessedArea::getRect()
 {
 	return &rect;
@@ -112,6 +136,8 @@ QtProcessedArea& QtProcessedArea::operator=(const QtProcessedArea& drop)
 {
 	rect = drop.rect;
 	activ = drop.activ;
+	classLabel = drop.classLabel;
+	lineColor = drop.lineColor;
 	draw = drop.draw;
 	return *this;
 }
@@ -135,4 +161,9 @@ void QtProcessedArea::setCenter(cv::Point const newCenter)
 double QtProcessedArea::getArea(bool scaled)
 {
 	return rect.height() * rect.width();
+}
+
+void QtProcessedArea::setClassLabel(int newClass)
+{
+	classLabel = newClass;
 }

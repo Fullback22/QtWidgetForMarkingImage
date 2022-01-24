@@ -1,4 +1,6 @@
 #pragma once
+#include <fstream>
+#include <iostream>
 
 #include <QtWidgets/QWidget>
 #include "ui_QtWidgetForMarkingImage.h"
@@ -15,7 +17,11 @@ class QtWidgetForMarkingImage : public QWidget
     cv::Mat activImage{};
     bool setCustomSize{};
     bool setCustomName{};
-    
+    int stepColor{ 55 };
+    int classInOneColor{ 255 / stepColor };
+    QColor labelColor;
+    QString saveDirektory{"dataSet"};
+    int sequenceIterator{ 0 };
 public:
     QtWidgetForMarkingImage(QWidget *parent = Q_NULLPTR);
 
@@ -24,6 +30,9 @@ private:
     void initScrollArea_withImageName(QStringList& const imageNames);
     void setActivImage(int const newActivImageId);
     void resizeActivImage();
+    QColor setClassColor();
+    void saveMarking();
+    std::string setSaveName();
 public slots:
     void slot_chooseImageName();
     void slot_previousImage();
@@ -32,5 +41,12 @@ public slots:
     void slot_changeSaveNameRB();
     void slot_activateImage(int i);
     void slot_addRect();
-    void slot_changeClassLabel(int value);
+    void slot_delRect();
+    void slot_setNewClassLabel(int value);
+    void slot_changeClassLabel();
+    void slot_markingAndSaveImage();
+    void slot_setSaveDirectory(QString directory);
+    void slot_chooseSaveDirectory();
+    void slot_changeStartIterator(QString start);
+    void slot_changeImageSize();
 };

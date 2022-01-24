@@ -12,11 +12,13 @@ class QtProcessedArea : public QObject
 {
 	Q_OBJECT
 	QtRotateRect rect;
+	int classLabel;
+	QColor *lineColor;
 	bool activ;
 	bool draw;
 public:
 	QtProcessedArea(QObject *parent=Q_NULLPTR );
-	QtProcessedArea(QtRotateRect newRect, QObject* parent = Q_NULLPTR);
+	QtProcessedArea(QtRotateRect newRect, int const classLabel, QColor const *color, QObject* parent = Q_NULLPTR);
 
 	QtProcessedArea(const QtProcessedArea& drop);
 	QtProcessedArea(QtProcessedArea&& drop);
@@ -30,7 +32,10 @@ public:
 	void setDraw(bool isDraw);
 	bool isActiv();
 	bool isDraw();
-
+	int getClassLabel()const;
+	void setClassLabel(int newClass);
+	QColor getColor()const;
+	void setColor(QColor const * color);
 	double getArea(bool scaled=false);
 	QtRotateRect* getRect();
 

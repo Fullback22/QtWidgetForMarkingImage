@@ -45,15 +45,14 @@ public:
 	~QtGuiDisplay();
 	void setSizeScrollBar();
 
-	//void setActivProcessObj(ProcessedObject &activObj, bool master=true, int number=0);
 	void setEanbleActivededRoi(bool activ);
-	//void setEnableWidtsGrouBox(bool enable);
 	void setActiv(bool activ);
 	void setChangeActivArea(bool isChange);
 	void setChangesProcessedArears(bool isChang);
 
 	void draw_proceseArears();
-	void add_rect();
+	void add_rect(int classLabel, QColor const *color);
+	void deletActivRectangel();
 	QRect getLabelRect();
 
 
@@ -67,6 +66,8 @@ public:
 	void setActivProcesArea(int activArea);
 
 	void setNewImage(cv::Mat const inputImg);
+	void setNewClassLabel(int const classLabel, QColor const* color);
+	void getClsaaRectangelAndLabel(std::vector<QRect>& rectangel, std::vector<int>& label);
 private:
 	Ui::QtGuiDisplay ui;
 public slots:

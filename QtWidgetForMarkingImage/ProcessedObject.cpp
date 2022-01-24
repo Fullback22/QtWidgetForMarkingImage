@@ -6,7 +6,7 @@ ProcessedObject::ProcessedObject():
 }
 
 ProcessedObject::ProcessedObject(bool imageIsNull) :
-	processedArears_{ QtProcessedArea(QtRotateRect(0,0,0,0,0)) }
+	processedArears_{ QtProcessedArea() }
 {
 }
 
