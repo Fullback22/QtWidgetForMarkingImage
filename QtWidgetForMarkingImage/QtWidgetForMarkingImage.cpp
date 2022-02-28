@@ -120,8 +120,8 @@ void QtWidgetForMarkingImage::saveMarking()
     ui.widgetForImage->getClsaaRectangelAndLabel(limitRect, classLabel);
     for (size_t i{ 0 }; i < limitRect.size(); ++i)
     {
-        objectCoordinate << classLabel[i] << " " << static_cast<float>(limitRect[i].center().x()) / activImage.size().width << " " << static_cast<float>(limitRect[i].center().y()) / activImage.size().height 
-            << " " << static_cast<float>(limitRect[i].width()) / activImage.size().width << " " << static_cast<float>(limitRect[i].height()) / activImage.size().height << std::endl;
+        objectCoordinate << classLabel[i] << " " << static_cast<float>(limitRect[i].center().x()) << " " << static_cast<float>(limitRect[i].center().y()) 
+            << " " << static_cast<float>(limitRect[i].width()) << " " << static_cast<float>(limitRect[i].height()) << std::endl;
     }
     cv::imwrite(saveName + ".jpg", activImage);
     objectCoordinate.close();
