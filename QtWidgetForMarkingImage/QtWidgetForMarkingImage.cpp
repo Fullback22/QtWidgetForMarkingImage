@@ -32,6 +32,11 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     connect(ui.PB_setSaveDirectory, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectory()));
 }
 
+QtWidgetForMarkingImage::~QtWidgetForMarkingImage()
+{
+    delete[] newLabel;
+}
+
 void QtWidgetForMarkingImage::slot_chooseImageName()
 {
     QFileDialog fd{};
