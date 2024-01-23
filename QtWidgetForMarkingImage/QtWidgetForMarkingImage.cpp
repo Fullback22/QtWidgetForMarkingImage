@@ -9,7 +9,7 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     
     ui.spinBox_classLabel->setMaximum(3 * classInOneColor);
     labelColor = setClassColor();
-
+   
     connect(ui.PB_chooseImage, SIGNAL(clicked()), this, SLOT(slot_chooseImageName()));
     connect(ui.PB_previousImage, SIGNAL(clicked()), this, SLOT(slot_previousImage()));
     connect(ui.PB_nextImage, SIGNAL(clicked()), this, SLOT(slot_nextImage()));
@@ -69,11 +69,11 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
         cv::Mat buferImage{ cv::imread(dirictoriName.toStdString()) };
         if (!buferImage.empty())
         {
-            buferImage.copyTo(activImage);
+            activImage.updateFrame(buferImage);
             if (setCustomSize)
                 resizeActivImage();
-            ui.widgetForImage->setNewImage(activImage);
-            ui.widgetForImage->updateImg();
+            ui.widgetForImage->updateFrame(activImage);
+            ui.widgetForImage->updateImage();
         }
     }
 }
@@ -84,7 +84,9 @@ void QtWidgetForMarkingImage::resizeActivImage()
     {
         QString newHeigth{ ui.LE_newHeigth->text() };
         QString newWidth{ ui.LE_newWidth->text() };
-        cv::resize(activImage, activImage, cv::Size(newWidth.toInt(), newHeigth.toInt()));
+        cv::Mat buferImage{ activImage.getMat() };
+        cv::resize(buferImage, buferImage, cv::Size(newWidth.toInt(), newHeigth.toInt()));
+        activImage.updateFrame(buferImage);
     }
 }
 
@@ -117,13 +119,13 @@ void QtWidgetForMarkingImage::saveMarking()
     std::ofstream objectCoordinate(saveName + ".txt", std::ios_base::out | std::ios_base::trunc);
     std::vector<QRect> limitRect;
     std::vector<int> classLabel;
-    ui.widgetForImage->getClsaaRectangelAndLabel(limitRect, classLabel);
+    //ui.widgetForImage->getClsaaRectangelAndLabel(limitRect, classLabel);
     for (size_t i{ 0 }; i < limitRect.size(); ++i)
     {
         objectCoordinate << classLabel[i] << " " << static_cast<float>(limitRect[i].center().x()) << " " << static_cast<float>(limitRect[i].center().y()) 
             << " " << static_cast<float>(limitRect[i].width()) << " " << static_cast<float>(limitRect[i].height()) << std::endl;
     }
-    cv::imwrite(saveName + ".jpg", activImage);
+    cv::imwrite(saveName + ".jpg", activImage.getMat());
     objectCoordinate.close();
 }
 
@@ -226,7 +228,7 @@ void QtWidgetForMarkingImage::slot_activateImage(int i)
 
 void QtWidgetForMarkingImage::slot_addRect()
 {
-    ui.widgetForImage->add_rect(ui.spinBox_classLabel->value(), &labelColor);
+    //ui.widgetForImage->addRectangel(ui.spinBox_classLabel->value(), &labelColor);
 }
 
 void QtWidgetForMarkingImage::slot_markingAndSaveImage()
@@ -255,12 +257,12 @@ void QtWidgetForMarkingImage::slot_setSaveDirectory(QString directory)
 
 void QtWidgetForMarkingImage::slot_delRect()
 {
-    ui.widgetForImage->deletActivRectangel();
+    ui.widgetForImage->deleteFigure(0);
 }
 
 void QtWidgetForMarkingImage::slot_changeClassLabel()
 {
-    ui.widgetForImage->setNewClassLabel(ui.spinBox_classLabel->value(), &labelColor);
+    //ui.widgetForImage->setNewClassLabel(ui.spinBox_classLabel->value(), &labelColor);
 }
 
 void QtWidgetForMarkingImage::slot_setNewClassLabel(int value)

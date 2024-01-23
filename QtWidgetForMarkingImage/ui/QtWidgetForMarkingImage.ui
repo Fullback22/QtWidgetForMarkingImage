@@ -546,7 +546,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="QtWidgetForMarkingImage.qrc"/>
+  <include location="../QtWidgetForMarkingImage.qrc"/>
  </resources>
  <connections/>
 </ui>

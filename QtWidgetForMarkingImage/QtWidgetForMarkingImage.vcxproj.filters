@@ -21,14 +21,20 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Display">
+      <UniqueIdentifier>{92340fe7-a100-4f17-a801-62579d976026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{5a2ec2f6-c89b-41b0-adef-a3e925add75c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Figure">
+      <UniqueIdentifier>{19578334-fda5-4e67-a27c-f4b036c52403}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="QtWidgetForMarkingImage.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="QtWidgetForMarkingImage.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtMoc Include="QtWidgetForMarkingImage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -38,9 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="myLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QtProcessedArea.cpp">
@@ -55,30 +58,34 @@
     <ClCompile Include="ProcessedObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QtGuiDisplay.cpp">
+    <ClCompile Include="Display\myLabel.cpp">
+      <Filter>Display</Filter>
+    </ClCompile>
+    <ClCompile Include="Display\QtGuiDisplay.cpp">
+      <Filter>Display</Filter>
+    </ClCompile>
+    <ClCompile Include="Frame.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Figure\FigureRectangle.cpp">
+      <Filter>Figure</Filter>
+    </ClCompile>
+    <ClCompile Include="Figure\IFigure.cpp">
+      <Filter>Figure</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="QtWidgetsImageName.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="QtGuiDisplay.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="myLabel.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="QtGuiDisplay.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="QtProcessedArea.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="QtWidgetsImageName.h">
       <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Display\myLabel.h">
+      <Filter>Display</Filter>
+    </QtMoc>
+    <QtMoc Include="Display\QtGuiDisplay.h">
+      <Filter>Display</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -88,5 +95,25 @@
     <ClInclude Include="ProcessedObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure\FigureRectangle.h">
+      <Filter>Figure</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure\IFigure.h">
+      <Filter>Figure</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ui\QtGuiDisplay.ui">
+      <Filter>ui</Filter>
+    </QtUic>
+    <QtUic Include="ui\QtWidgetForMarkingImage.ui">
+      <Filter>ui</Filter>
+    </QtUic>
+    <QtUic Include="ui\QtWidgetsImageName.ui">
+      <Filter>ui</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>

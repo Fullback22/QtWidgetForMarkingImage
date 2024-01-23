@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <QtWidgets/QWidget>
+#include "Display/QtGuiDisplay.h"
 #include "ui_QtWidgetForMarkingImage.h"
 
 #include "QtWidgetsImageName.h"
@@ -14,7 +15,7 @@ class QtWidgetForMarkingImage : public QWidget
     QtWidgetsImageName* newLabel{};
     int activImageId{};
     int quantityImage{};
-    cv::Mat activImage{};
+    Frame activImage{};
     bool setCustomSize{};
     bool setCustomName{};
     int stepColor{ 55 };
