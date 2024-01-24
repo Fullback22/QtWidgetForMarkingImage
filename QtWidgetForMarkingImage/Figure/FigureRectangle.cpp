@@ -306,6 +306,11 @@ void FigureRectangle::setRectangle(float const x, float const y, float const wid
 	}
 }
 
+void FigureRectangle::setPen(const QPen& newPen)
+{
+	pen_ = newPen;
+}
+
 float FigureRectangle::getX() const
 {
 	return x_;

@@ -14,17 +14,17 @@
     <ProjectGuid>{041F4DF6-585B-4763-B9FC-A642C2CABF56}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0</WindowsTargetPlatformVersion>
-    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
@@ -60,19 +60,19 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);C:\opencv15\opencv\build\include;.\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);E:\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories);C:\opencv15\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories);E:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies);opencv_world440d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);C:\opencv15\opencv\build\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);E:\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories);C:\opencv15\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Qt_LIBPATH_);%(AdditionalLibraryDirectories);E:\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);opencv_world440.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -108,25 +108,21 @@
     <ClCompile Include="Figure\FigureRectangle.cpp" />
     <ClCompile Include="Figure\IFigure.cpp" />
     <ClCompile Include="Frame.cpp" />
-    <ClCompile Include="ProcessedObject.cpp" />
+    <ClCompile Include="MarkupObject.cpp" />
     <ClCompile Include="QtWidgetsImageName.cpp" />
     <QtRcc Include="QtWidgetForMarkingImage.qrc" />
     <QtMoc Include="QtWidgetForMarkingImage.h" />
-    <ClCompile Include="QtProcessedArea.cpp" />
-    <ClCompile Include="QtRotateRect.cpp" />
     <ClCompile Include="QtWidgetForMarkingImage.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MarkupObject.h" />
     <QtMoc Include="Display\myLabel.h" />
     <QtMoc Include="Display\QtGuiDisplay.h" />
     <ClInclude Include="Figure\FigureRectangle.h" />
     <ClInclude Include="Figure\IFigure.h" />
     <ClInclude Include="Frame.h" />
-    <ClInclude Include="ProcessedObject.h" />
-    <ClInclude Include="QtRotateRect.h" />
     <QtMoc Include="QtWidgetsImageName.h" />
-    <QtMoc Include="QtProcessedArea.h" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ui\QtGuiDisplay.ui" />

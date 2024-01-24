@@ -22,7 +22,7 @@ Frame::Frame(const cv::Mat& inputMat, const bool imageIsNull):
 	originalMat_{ inputMat },
 	imageIsNull_{ imageIsNull }
 {
-	originalPixmap_ = QPixmap::fromImage(QImage(inputMat.data, inputMat.cols, inputMat.rows, inputMat.step, QImage::Format_RGB888));
+	originalPixmap_ = QPixmap::fromImage(QImage(inputMat.data, inputMat.cols, inputMat.rows, inputMat.step, QImage::Format_BGR888));
 }
 
 Frame::Frame(const Frame& dep):
@@ -56,7 +56,7 @@ void Frame::updateFrame(const cv::Mat& newMat, const QPixmap& newPixmap)
 void Frame::updateFrame(const cv::Mat& newMat)
 {
 	originalMat_ = newMat;
-	originalPixmap_ = QPixmap::fromImage(QImage(newMat.data, newMat.cols, newMat.rows, newMat.step, QImage::Format_RGB888));
+	originalPixmap_ = QPixmap::fromImage(QImage(newMat.data, newMat.cols, newMat.rows, newMat.step, QImage::Format_BGR888));
 }
 
 void Frame::updateFrame(const QPixmap& newPixmap)

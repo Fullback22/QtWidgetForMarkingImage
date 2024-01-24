@@ -43,6 +43,7 @@ public:
 	virtual void move(const QPoint& delta) = 0;
 	virtual void move(const QPoint& delta, const QSize& boundingSize) = 0;
 	
+	virtual void setPen(const QPen& newPen) = 0;
 	IFigure& operator=(const IFigure& drop) = delete;
 
 	

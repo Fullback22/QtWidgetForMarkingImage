@@ -46,16 +46,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QtProcessedArea.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="QtRotateRect.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="QtWidgetsImageName.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProcessedObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Display\myLabel.cpp">
@@ -73,11 +64,11 @@
     <ClCompile Include="Figure\IFigure.cpp">
       <Filter>Figure</Filter>
     </ClCompile>
+    <ClCompile Include="MarkupObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="QtProcessedArea.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="QtWidgetsImageName.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -89,12 +80,6 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="QtRotateRect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProcessedObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Frame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Figure\IFigure.h">
       <Filter>Figure</Filter>
+    </ClInclude>
+    <ClInclude Include="MarkupObject.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

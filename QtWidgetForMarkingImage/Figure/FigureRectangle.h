@@ -47,6 +47,7 @@ public:
     void move(const QPoint& delta, const QSize& boundingSize) override;
 
     void setRectangle(float const x, float const y, float const width, float const heidth);
+    void setPen(const QPen& newPen);
 
     float getX() const;
     float getY() const;
