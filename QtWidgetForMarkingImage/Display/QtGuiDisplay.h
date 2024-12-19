@@ -73,4 +73,5 @@ protected:
 
 signals:
 	void newActivFigure(int index);
+	void newActivScale(float activScale);
 };

@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>qrc;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Form Files">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
       <Extensions>ui</Extensions>
@@ -30,11 +26,11 @@
     <Filter Include="Figure">
       <UniqueIdentifier>{19578334-fda5-4e67-a27c-f4b036c52403}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classifire">
+      <UniqueIdentifier>{ebce2915-2a3f-47cb-869c-b76953c8cd33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="QtWidgetForMarkingImage.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
     <QtMoc Include="QtWidgetForMarkingImage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -67,6 +63,9 @@
     <ClCompile Include="MarkupObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Classifier\Classifier.cpp">
+      <Filter>Classifire</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtWidgetsImageName.h">
@@ -91,6 +90,9 @@
     </ClInclude>
     <ClInclude Include="MarkupObject.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Classifier\Classifier.h">
+      <Filter>Classifire</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

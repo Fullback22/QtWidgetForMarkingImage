@@ -61,7 +61,7 @@
               <x>0</x>
               <y>0</y>
               <width>212</width>
-              <height>432</height>
+              <height>435</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout">
@@ -134,15 +134,11 @@
       <attribute name="title">
        <string>Marking</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,1,2,7">
+      <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,0,1,2,7">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,3,0">
+        <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,3,0">
          <item>
-          <widget class="QSpinBox" name="spinBox_classLabel">
-           <property name="maximum">
-            <number>51</number>
-           </property>
-          </widget>
+          <widget class="QComboBox" name="cb_classes"/>
          </item>
          <item>
           <widget class="QLabel" name="label_5">
@@ -156,6 +152,27 @@
          </item>
          <item>
           <widget class="QPushButton" name="PB_changeClassLabel">
+           <property name="text">
+            <string>Change label</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QComboBox" name="cb_types"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Type label</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_changeType">
            <property name="text">
             <string>Change label</string>
            </property>

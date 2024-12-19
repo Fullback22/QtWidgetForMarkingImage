@@ -103,6 +103,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Classifier\Classifier.cpp" />
     <ClCompile Include="Display\myLabel.cpp" />
     <ClCompile Include="Display\QtGuiDisplay.cpp" />
     <ClCompile Include="Figure\FigureRectangle.cpp" />
@@ -110,12 +111,12 @@
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="MarkupObject.cpp" />
     <ClCompile Include="QtWidgetsImageName.cpp" />
-    <QtRcc Include="QtWidgetForMarkingImage.qrc" />
     <QtMoc Include="QtWidgetForMarkingImage.h" />
     <ClCompile Include="QtWidgetForMarkingImage.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Classifier\Classifier.h" />
     <ClInclude Include="MarkupObject.h" />
     <QtMoc Include="Display\myLabel.h" />
     <QtMoc Include="Display\QtGuiDisplay.h" />

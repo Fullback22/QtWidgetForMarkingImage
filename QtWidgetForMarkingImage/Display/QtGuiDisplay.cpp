@@ -90,6 +90,7 @@ void QtGuiDisplay::slot_ZoomImg_In()
 		ui.horSB_forTempImg->show();
 	if (activScale_ > ui.label_for_TempImg->getCoefficientRecalculationByHeigth())
 		ui.verSB_forTempImg->show();
+	emit newActivScale(scale_[activScale_]);
 
 	ui.label_for_TempImg->setImageScale(scale_[activScale_]);
 	setSizeScrollBar();
@@ -107,6 +108,7 @@ void QtGuiDisplay::slot_ZoomImg_In()
 
 	float scaleInPercent{ scale_[activScale_] * 100 };
 	ui.label_Scale->setText(QString::number(scaleInPercent) + "%");
+	
 }
 
 void QtGuiDisplay::slot_ZoomImg_Out()
@@ -121,6 +123,7 @@ void QtGuiDisplay::slot_ZoomImg_Out()
 	if (activScale_ <= ui.label_for_TempImg->getCoefficientRecalculationByHeigth())
 		ui.verSB_forTempImg->show();
 
+	emit newActivScale(scale_[activScale_]);
 	ui.label_for_TempImg->setImageScale(scale_[activScale_]);
 	setSizeScrollBar();
 
@@ -144,9 +147,11 @@ void QtGuiDisplay::slot_ZoomImg_AllLabl()
 	ui.verSB_forTempImg->hide();
 	updateGeometry();
 	activScale_ = 0;
+	emit newActivScale(scale_[activScale_]);
 	ui.label_for_TempImg->setImageScale(scale_[activScale_]);
 	float scaleInPercent{ scale_[activScale_] * 100 };
 	ui.label_Scale->setText(QString::number(scaleInPercent, 'f', 1) + "%");
+
 
 	if (scaleFollowingNormalScale_ < 10)
 		ui.pb_zoomIncress->setEnabled(true);

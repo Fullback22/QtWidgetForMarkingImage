@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include <map>
 
 #include <QtWidgets/QWidget>
 #include "Display/QtGuiDisplay.h"
@@ -8,6 +9,7 @@
 #include "ui_QtWidgetForMarkingImage.h"
 
 #include "QtWidgetsImageName.h"
+#include "Classifier/Classifier.h"
 
 class QtWidgetForMarkingImage : public QWidget
 {
@@ -25,6 +27,9 @@ class QtWidgetForMarkingImage : public QWidget
     std::vector<MarkupObject> markupObjects_;
     int activMarkupObject_{ -1 };
 
+    Classifier classLabels{};
+    std::map<std::string, Classifier> typeClasses;
+
 public:
     QtWidgetForMarkingImage(QWidget *parent = Q_NULLPTR);
     ~QtWidgetForMarkingImage();
@@ -36,6 +41,8 @@ private:
     void resizeActivImage();
     void saveMarking();
     std::string setSaveName();
+    void loadClassifirs();
+
 public slots:
     void slot_chooseImageName();
     void slot_previousImage();
@@ -52,4 +59,7 @@ public slots:
     void slot_changeStartIterator(QString start);
     void slot_changeImageSize();
     void slot_setActivMarkupObject(int const index);
+    void slot_changeTypes(const QString& className);
+    void slot_changeTypeLabel();
+    void slot_updateScale(float newScale);
 };

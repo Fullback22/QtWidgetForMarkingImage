@@ -41,11 +41,31 @@ int MarkupObject::getClass() const
 	return objectClass_;
 }
 
+void MarkupObject::setType(int const typeIndex)
+{
+    objectType_ = typeIndex;
+}
+
+int MarkupObject::getType() const
+{
+    return objectType_;
+}
+
 void MarkupObject::setActiv(bool const isActiv)
 {
     if (isActiv)
-        pen_.setWidth(3);
+        pen_.setWidth(3 * penScale_);
     else
-        pen_.setWidth(1);
+        pen_.setWidth(1 * penScale_);
     position->setPen(pen_);
+}
+
+void MarkupObject::setPenScale(const double scale)
+{
+    if (scale <= 1)
+        penScale_ = 1.0 / scale;
+    else
+        penScale_ = 1;
+    pen_.setWidth(pen_.width() * penScale_);
+    return;
 }

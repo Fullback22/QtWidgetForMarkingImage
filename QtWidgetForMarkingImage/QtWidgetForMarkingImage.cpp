@@ -6,15 +6,16 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     setCustomName{false}
 {
     ui.setupUi(this);
-    
-    ui.spinBox_classLabel->setMaximum(50);
+    loadClassifirs();
    
+    connect(ui.widgetForImage, &QtGuiDisplay::newActivScale, this, &QtWidgetForMarkingImage::slot_updateScale);
     connect(ui.PB_chooseImage, SIGNAL(clicked()), this, SLOT(slot_chooseImageName()));
     connect(ui.PB_previousImage, SIGNAL(clicked()), this, SLOT(slot_previousImage()));
     connect(ui.PB_nextImage, SIGNAL(clicked()), this, SLOT(slot_nextImage()));
 
-    connect(ui.spinBox_classLabel, SIGNAL(valueChanged(int)), this, SLOT(slot_setNewClassLabel(int)));
+    connect(ui.cb_classes, &QComboBox::currentTextChanged, this, &QtWidgetForMarkingImage::slot_changeTypes);
     connect(ui.PB_changeClassLabel, SIGNAL(clicked()), this, SLOT(slot_changeClassLabel()));
+    connect(ui.pb_changeType, SIGNAL(clicked()), this, SLOT(slot_changeTypeLabel()));
     connect(ui.PB_addRectangel, SIGNAL(clicked()), this, SLOT(slot_addMarkupObject()));
     connect(ui.PB_deleteRectangel, SIGNAL(clicked()), this, SLOT(slot_delRect()));
     connect(ui.PB_markingImage, SIGNAL(clicked()), this, SLOT(slot_markingAndSaveImage()));
@@ -108,11 +109,12 @@ void QtWidgetForMarkingImage::saveMarking()
     std::ofstream objectCoordinate(saveName + ".txt", std::ios_base::out | std::ios_base::trunc);
     FigureRectangle* limitRect{};
     
+    cv::Size imageSize{ activImage_.getMat().size() };
     for (size_t i{ }; i < markupObjects_.size(); ++i)
     {
         limitRect = markupObjects_[i].position;
-        objectCoordinate << markupObjects_[i].getClass() << " " << static_cast<float>(limitRect->getWidth() / 2 + limitRect->getX()) << " " << static_cast<float>(limitRect->getHeidth() / 2 + limitRect->getY())
-            << " " << static_cast<float>(limitRect->getWidth()) << " " << static_cast<float>(limitRect->getHeidth()) << std::endl;
+        objectCoordinate << markupObjects_[i].getClass() + 1 << " " << static_cast<float>(limitRect->getWidth() / 2 + limitRect->getX()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth() / 2 + limitRect->getY()) / imageSize.height
+            << " " << static_cast<float>(limitRect->getWidth()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth()) / imageSize.height << " " << markupObjects_[i].getType() << std::endl;
     }
     cv::imwrite(saveName + ".png", activImage_.getMat());
     objectCoordinate.close();
@@ -183,6 +185,21 @@ std::string QtWidgetForMarkingImage::setSaveName()
     return saveName.toStdString();
 }
 
+void QtWidgetForMarkingImage::loadClassifirs()
+{
+    classLabels.setClassifier("classes.txt");
+    for (size_t i{}; i < classLabels.size(); ++i)
+    {
+        ui.cb_classes->addItem(QString::fromLocal8Bit(classLabels[i].c_str()));
+        typeClasses[classLabels[i]].setClassifier(classLabels[i] + ".txt");
+    }
+    ui.cb_types->clear();
+    for (size_t i{}; i < typeClasses[classLabels[ui.cb_classes->currentIndex()]].size(); ++i)
+    {
+        ui.cb_types->addItem(QString::fromLocal8Bit(typeClasses[classLabels[ui.cb_classes->currentIndex()]][i].c_str()));
+    }
+}
+
 void QtWidgetForMarkingImage::slot_changeSaveNameRB()
 {
     if (ui.RB_originalName->isChecked())
@@ -222,7 +239,8 @@ void QtWidgetForMarkingImage::slot_addMarkupObject()
     activMarkupObject_ = markupObjects_.size();
     markupObjects_.push_back(MarkupObject());
     
-    markupObjects_[activMarkupObject_].setClass(ui.spinBox_classLabel->value());
+    markupObjects_[activMarkupObject_].setClass(ui.cb_classes->currentIndex());
+    markupObjects_[activMarkupObject_].setType(ui.cb_types->currentIndex());
     markupObjects_[activMarkupObject_].setActiv(true);
 
     ui.widgetForImage->addRectangel(markupObjects_[activMarkupObject_].position);
@@ -235,6 +253,10 @@ void QtWidgetForMarkingImage::slot_addMarkupObject()
 void QtWidgetForMarkingImage::slot_markingAndSaveImage()
 {
     saveMarking();
+    for (; markupObjects_.size() > 0;)
+    {
+        slot_delRect();
+    }
     if (activImageId + 1 != quantityImage)
         slot_nextImage();
 }
@@ -273,12 +295,13 @@ void QtWidgetForMarkingImage::slot_delRect()
     {
         ui.PB_deleteRectangel->setDisabled(true);
         activMarkupObject_ = -1;
-        ui.spinBox_classLabel->setValue(0);
+        ui.cb_classes->setCurrentIndex(0);
     }
 
     if (activMarkupObject_ >= 0)
     {
-        ui.spinBox_classLabel->setValue(markupObjects_[activMarkupObject_].getClass());
+        ui.cb_classes->setCurrentIndex(markupObjects_[activMarkupObject_].getClass());
+        ui.cb_types->setCurrentIndex(markupObjects_[activMarkupObject_].getType());
     }
     ui.widgetForImage->updateImage();
 }
@@ -287,7 +310,8 @@ void QtWidgetForMarkingImage::slot_changeClassLabel()
 {
     if (activMarkupObject_ != -1)
     {
-        markupObjects_[activMarkupObject_].setClass(ui.spinBox_classLabel->value());
+        markupObjects_[activMarkupObject_].setClass(ui.cb_classes->currentIndex());
+        markupObjects_[activMarkupObject_].setType(0);
         ui.widgetForImage->updateImage();
     }
 }
@@ -304,8 +328,34 @@ void QtWidgetForMarkingImage::slot_setActivMarkupObject(int const index)
         markupObjects_[activMarkupObject_].setActiv(false);
         activMarkupObject_ = index;
         ui.widgetForImage->setActivFigure(index);
-        ui.spinBox_classLabel->setValue(markupObjects_[index].getClass());
+        ui.cb_classes->setCurrentIndex(markupObjects_[index].getClass());
+        ui.cb_types->setCurrentIndex(markupObjects_[index].getType());
         markupObjects_[activMarkupObject_].setActiv(true);
         ui.widgetForImage->updateImage();
+    }
+}
+
+void QtWidgetForMarkingImage::slot_changeTypes(const QString& className)
+{
+    ui.cb_types->clear();
+    for (size_t i{}; i < typeClasses[className.toLocal8Bit().toStdString()].size(); ++i)
+    {
+        ui.cb_types->addItem(QString::fromLocal8Bit(typeClasses[className.toLocal8Bit().toStdString()][i].c_str()));
+    }
+}
+
+void QtWidgetForMarkingImage::slot_changeTypeLabel()
+{
+    if (activMarkupObject_ != -1)
+    {
+        markupObjects_[activMarkupObject_].setType(ui.cb_types->currentIndex());
+    }
+}
+
+void QtWidgetForMarkingImage::slot_updateScale(float newScale)
+{
+    for (auto &obj : markupObjects_)
+    {
+        obj.setPenScale(newScale);
     }
 }
