@@ -29,6 +29,9 @@
     <Filter Include="Classifire">
       <UniqueIdentifier>{ebce2915-2a3f-47cb-869c-b76953c8cd33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loger">
+      <UniqueIdentifier>{c0fabbed-38d9-4417-aa8b-1e4a3445e482}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtWidgetForMarkingImage.h">
@@ -66,6 +69,9 @@
     <ClCompile Include="Classifier\Classifier.cpp">
       <Filter>Classifire</Filter>
     </ClCompile>
+    <ClCompile Include="Loger\simplLoger.cpp">
+      <Filter>Loger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="QtWidgetsImageName.h">
@@ -93,6 +99,9 @@
     </ClInclude>
     <ClInclude Include="Classifier\Classifier.h">
       <Filter>Classifire</Filter>
+    </ClInclude>
+    <ClInclude Include="Loger\simplLoger.h">
+      <Filter>Loger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 
 #include <QtWidgets/QWidget>
 #include "Display/QtGuiDisplay.h"
@@ -10,6 +11,7 @@
 
 #include "QtWidgetsImageName.h"
 #include "Classifier/Classifier.h"
+#include"Loger/simplLoger.h"
 
 class QtWidgetForMarkingImage : public QWidget
 {
@@ -42,6 +44,9 @@ private:
     void saveMarking();
     std::string setSaveName();
     void loadClassifirs();
+    void loadMarking(const std::string& fileName);
+    void parsLineToOjectParams(const std::string& line, MarkupObject& object);
+    void convertBboxToAbsluteCoordinate(cv::Rect2f& inputRect, const cv::Size2i imageSize);
 
 public slots:
     void slot_chooseImageName();

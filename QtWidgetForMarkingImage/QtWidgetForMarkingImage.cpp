@@ -5,6 +5,7 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     setCustomSize{false},
     setCustomName{false}
 {
+    LOG.logMessege("app start", LogLevel::_INFO_);
     ui.setupUi(this);
     loadClassifirs();
    
@@ -38,6 +39,7 @@ QtWidgetForMarkingImage::~QtWidgetForMarkingImage()
 {
     delete[] newLabel;
     newLabel = nullptr;
+    LOG.logMessege("app stop", LogLevel::_INFO_);
 }
 
 void QtWidgetForMarkingImage::slot_chooseImageName()
@@ -87,6 +89,10 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
                 resizeActivImage();
             ui.widgetForImage->setActivFrame(activImage_);
             ui.widgetForImage->updateImage();
+
+            size_t found{ dirictoriName.toStdString().find_last_of(".") };
+            QString fileName{ QString::fromStdString(dirictoriName.toStdString().erase(found, dirictoriName.size() - 1)) + ".txt"};
+            loadMarking(fileName.toStdString());
         }
     }
 }
@@ -187,16 +193,102 @@ std::string QtWidgetForMarkingImage::setSaveName()
 
 void QtWidgetForMarkingImage::loadClassifirs()
 {
-    classLabels.setClassifier("classes.txt");
-    for (size_t i{}; i < classLabels.size(); ++i)
-    {
-        ui.cb_classes->addItem(QString::fromLocal8Bit(classLabels[i].c_str()));
-        typeClasses[classLabels[i]].setClassifier(classLabels[i] + ".txt");
+    try {
+        classLabels.setClassifier("classes/classes.txt");
+        for (size_t i{}; i < classLabels.size(); ++i)
+        {
+            ui.cb_classes->addItem(QString::fromLocal8Bit(classLabels[i].c_str()));
+            typeClasses[classLabels[i]].setClassifier("classes/" + classLabels[i] + ".txt");
+        }
+        ui.cb_types->clear();
+        for (size_t i{}; i < typeClasses[classLabels[ui.cb_classes->currentIndex()]].size(); ++i)
+        {
+            ui.cb_types->addItem(QString::fromLocal8Bit(typeClasses[classLabels[ui.cb_classes->currentIndex()]][i].c_str()));
+        }
+        LOG.logMessege("classifire load", LogLevel::_INFO_);
     }
-    ui.cb_types->clear();
-    for (size_t i{}; i < typeClasses[classLabels[ui.cb_classes->currentIndex()]].size(); ++i)
+    catch (std::string err)
     {
-        ui.cb_types->addItem(QString::fromLocal8Bit(typeClasses[classLabels[ui.cb_classes->currentIndex()]][i].c_str()));
+        LOG.logMessege(err, LogLevel::_ERROR_);
+    }
+}
+
+void QtWidgetForMarkingImage::parsLineToOjectParams(const std::string& line, MarkupObject& object)
+{
+    std::stringstream ss(line);
+    std::string temp;
+    int i{ 0 };
+    cv::Rect2f bbox{};
+    while (std::getline(ss, temp, ' '))
+    {
+        switch (i)
+        {
+        case 0:
+        {
+            int classId{ std::atoi(temp.c_str()) - 1 };
+            object.setClass(classId);
+            ui.cb_classes->setCurrentIndex(classId);
+            break;
+        }
+        case 1:
+        {
+            bbox.x = std::atof(temp.c_str());
+            break;
+        }
+        case 2:
+        {
+            bbox.y = std::atof(temp.c_str());
+            break;
+        }
+        case 3:
+        {
+            bbox.width = std::atof(temp.c_str());
+            break;
+        }
+        case 4:
+        {
+            bbox.height = std::atof(temp.c_str());
+            break;
+        }
+        case 5:
+        {
+            int typeId{ std::atoi(temp.c_str()) };
+            object.setType(typeId);
+            ui.cb_types->setCurrentIndex(typeId);
+            break;
+        }
+        }
+        ++i;
+    }
+    convertBboxToAbsluteCoordinate(bbox, activImage_.getMat().size());
+    object.position->setRectangle(bbox.x, bbox.y, bbox.width, bbox.height);
+}
+
+void QtWidgetForMarkingImage::convertBboxToAbsluteCoordinate(cv::Rect2f& inputRect, const cv::Size2i imageSize)
+{
+    inputRect.width *= imageSize.width;
+    inputRect.height *= imageSize.height;
+    inputRect.x = inputRect.x * imageSize.width - inputRect.width / 2.0;
+    inputRect.y = inputRect.y * imageSize.height - inputRect.height / 2.0;
+}
+
+void QtWidgetForMarkingImage::loadMarking(const std::string& fileName)
+{
+    std::ifstream fileWithMarks{ fileName, std::ios::in };
+    if (fileWithMarks.is_open())
+    {
+        std::string line{};
+        while (std::getline(fileWithMarks, line))
+        {
+            activMarkupObject_ = markupObjects_.size();
+            markupObjects_.push_back(MarkupObject());
+            ui.widgetForImage->addRectangel(markupObjects_[activMarkupObject_].position);
+            parsLineToOjectParams(line, markupObjects_[activMarkupObject_]);
+        }
+        ui.PB_deleteRectangel->setEnabled(true);
+        markupObjects_[activMarkupObject_].setActiv(true);
+        ui.widgetForImage->setActivFigure(activMarkupObject_);
+        fileWithMarks.close();
     }
 }
 

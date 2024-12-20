@@ -24,7 +24,7 @@ void Classifier::setClassifier(const std::string& fileName)
     }
     else
     {
-        throw (std::string{ "File not found" });
+        throw (std::string{ "File " + fileName + " not found" });
     }
 }
 

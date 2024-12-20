@@ -109,6 +109,7 @@
     <ClCompile Include="Figure\FigureRectangle.cpp" />
     <ClCompile Include="Figure\IFigure.cpp" />
     <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="Loger\simplLoger.cpp" />
     <ClCompile Include="MarkupObject.cpp" />
     <ClCompile Include="QtWidgetsImageName.cpp" />
     <QtMoc Include="QtWidgetForMarkingImage.h" />
@@ -117,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Classifier\Classifier.h" />
+    <ClInclude Include="Loger\simplLoger.h" />
     <ClInclude Include="MarkupObject.h" />
     <QtMoc Include="Display\myLabel.h" />
     <QtMoc Include="Display\QtGuiDisplay.h" />

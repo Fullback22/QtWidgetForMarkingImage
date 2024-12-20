@@ -1,5 +1,6 @@
 #include "QtWidgetForMarkingImage.h"
 #include <QtWidgets/QApplication>
+#include <Loger/simplLoger.h>
 
 int main(int argc, char *argv[])
 {
