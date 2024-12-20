@@ -286,6 +286,7 @@ void QtWidgetForMarkingImage::loadMarking(const std::string& fileName)
         {
             activMarkupObject_ = markupObjects_.size();
             markupObjects_.push_back(MarkupObject());
+            markupObjects_[activMarkupObject_].setPenScale(activPenScale);
             ui.widgetForImage->addRectangel(markupObjects_[activMarkupObject_].position);
             parsLineToOjectParams(line, markupObjects_[activMarkupObject_]);
         }
@@ -337,6 +338,7 @@ void QtWidgetForMarkingImage::slot_addMarkupObject()
         markupObjects_[activMarkupObject_].setActiv(false);
     activMarkupObject_ = markupObjects_.size();
     markupObjects_.push_back(MarkupObject());
+    markupObjects_[activMarkupObject_].setPenScale(activPenScale);
     
     markupObjects_[activMarkupObject_].setClass(ui.cb_classes->currentIndex());
     markupObjects_[activMarkupObject_].setType(ui.cb_types->currentIndex());
@@ -449,8 +451,9 @@ void QtWidgetForMarkingImage::slot_changeTypeLabel()
 
 void QtWidgetForMarkingImage::slot_updateScale(float newScale)
 {
+    activPenScale = newScale;
     for (auto &obj : markupObjects_)
     {
-        obj.setPenScale(newScale);
+        obj.setPenScale(activPenScale);
     }
 }

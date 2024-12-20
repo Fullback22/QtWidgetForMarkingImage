@@ -23,6 +23,7 @@ class QtWidgetForMarkingImage : public QWidget
     Frame activImage_{};
     bool setCustomSize{};
     bool setCustomName{};
+    float activPenScale{ 1.0 };
 
     QString saveDirektory{"dataSet"};
     int sequenceIterator{ 0 };
