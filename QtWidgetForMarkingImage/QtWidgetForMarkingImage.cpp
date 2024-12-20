@@ -74,6 +74,10 @@ void QtWidgetForMarkingImage::initScrollArea_withImageName(QStringList& const im
 
 void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
 {
+    for (; markupObjects_.size() > 0;)
+    {
+        slot_delRect();
+    }
     if (quantityImage > 0)
     {
         newLabel[activImageId].setStyleSheet("");
@@ -285,9 +289,12 @@ void QtWidgetForMarkingImage::loadMarking(const std::string& fileName)
             ui.widgetForImage->addRectangel(markupObjects_[activMarkupObject_].position);
             parsLineToOjectParams(line, markupObjects_[activMarkupObject_]);
         }
-        ui.PB_deleteRectangel->setEnabled(true);
-        markupObjects_[activMarkupObject_].setActiv(true);
-        ui.widgetForImage->setActivFigure(activMarkupObject_);
+        if (markupObjects_.size() > 0)
+        {
+            ui.PB_deleteRectangel->setEnabled(true);
+            markupObjects_[activMarkupObject_].setActiv(true);
+            ui.widgetForImage->setActivFigure(activMarkupObject_);
+        }
         fileWithMarks.close();
     }
 }
@@ -345,10 +352,6 @@ void QtWidgetForMarkingImage::slot_addMarkupObject()
 void QtWidgetForMarkingImage::slot_markingAndSaveImage()
 {
     saveMarking();
-    for (; markupObjects_.size() > 0;)
-    {
-        slot_delRect();
-    }
     if (activImageId + 1 != quantityImage)
         slot_nextImage();
 }

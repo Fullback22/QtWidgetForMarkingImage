@@ -40,3 +40,15 @@
 20.12 - 14:6:49	classifire load
 20.12 - 14:22:25	app start
 20.12 - 14:22:25	classifire load
+20.12 - 14:31:58	app start
+20.12 - 14:31:59	classifire load
+20.12 - 14:32:20	app start
+20.12 - 14:32:20	classifire load
+20.12 - 14:32:40	app start
+20.12 - 14:32:40	classifire load
+20.12 - 14:33:2	app start
+20.12 - 14:33:2	classifire load
+20.12 - 14:34:20	app start
+20.12 - 14:34:20	classifire load
+20.12 - 14:36:10	app start
+20.12 - 14:36:10	classifire load
