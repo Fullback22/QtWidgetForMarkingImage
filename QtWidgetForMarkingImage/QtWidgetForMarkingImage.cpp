@@ -93,9 +93,17 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
                 resizeActivImage();
             ui.widgetForImage->setActivFrame(activImage_);
             ui.widgetForImage->updateImage();
-
+            
             size_t found{ dirictoriName.toStdString().find_last_of(".") };
-            QString fileName{ QString::fromStdString(dirictoriName.toStdString().erase(found, dirictoriName.size() - 1)) + ".txt"};
+            QString fileName{ QString::fromStdString(dirictoriName.toStdString().erase(found, dirictoriName.size() - 1)) + ".txt" };
+            if (!saveDirektory.isNull())
+            {
+                found = fileName.toStdString().find_last_of("/\\");
+                fileName = QString::fromStdString(fileName.toStdString().substr(found + 1));
+                QString fileNameBufer{ fileName };
+                fileName = saveDirektory + '/' + fileNameBufer;
+            }
+            
             loadMarking(fileName.toStdString());
         }
     }
@@ -385,7 +393,6 @@ void QtWidgetForMarkingImage::slot_delRect()
     {
         --activMarkupObject_;
         ui.widgetForImage->setActivFigure(activMarkupObject_);
-        
     }
    
     if (markupObjects_.size() == 0)

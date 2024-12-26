@@ -25,7 +25,7 @@ class QtWidgetForMarkingImage : public QWidget
     bool setCustomName{};
     float activPenScale{ 1.0 };
 
-    QString saveDirektory{"dataSet"};
+    QString saveDirektory{};
     int sequenceIterator{ 0 };
     std::vector<MarkupObject> markupObjects_;
     int activMarkupObject_{ -1 };
