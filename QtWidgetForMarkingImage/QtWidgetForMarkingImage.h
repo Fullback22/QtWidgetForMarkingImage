@@ -25,7 +25,8 @@ class QtWidgetForMarkingImage : public QWidget
     bool setCustomName{};
     float activPenScale{ 1.0 };
 
-    QString saveDirektory{};
+    QString saveDirektoryForImage{};
+    QString saveDirektoryForLabel{};
     int sequenceIterator{ 0 };
     std::vector<MarkupObject> markupObjects_;
     int activMarkupObject_{ -1 };
@@ -43,7 +44,8 @@ private:
     void setActivImage(int const newActivImageId);
     void resizeActivImage();
     void saveMarking();
-    std::string setSaveName();
+    std::string setSaveNameForImage();
+    std::string setSaveNameForLabel(const std::string& imageName);
     void loadClassifirs();
     void loadMarking(const std::string& fileName);
     void parsLineToOjectParams(const std::string& line, MarkupObject& object);
@@ -60,8 +62,10 @@ public slots:
     void slot_delRect();
     void slot_changeClassLabel();
     void slot_markingAndSaveImage();
-    void slot_setSaveDirectory(QString directory);
-    void slot_chooseSaveDirectory();
+    void slot_setSaveDirectoryForImage(QString directory);
+    void slot_setSaveDirectoryForLabel(QString directory);
+    void slot_chooseSaveDirectoryForImage();
+    void slot_chooseSaveDirectoryForLabel();
     void slot_changeStartIterator(QString start);
     void slot_changeImageSize();
     void slot_setActivMarkupObject(int const index);

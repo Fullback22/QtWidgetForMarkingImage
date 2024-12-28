@@ -61,7 +61,7 @@
               <x>0</x>
               <y>0</y>
               <width>212</width>
-              <height>435</height>
+              <height>432</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout">
@@ -500,6 +500,13 @@
         </layout>
        </item>
        <item>
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>Save direktory</string>
@@ -507,16 +514,44 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Direktory for image</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_13" stretch="8,1">
          <item>
-          <widget class="QLineEdit" name="LE_saveDirectory">
+          <widget class="QLineEdit" name="le_saveDirectoryImage">
            <property name="text">
-            <string>dataSet</string>
+            <string/>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="PB_setSaveDirectory">
+          <widget class="QPushButton" name="pb_setSaveDirectoryForImage">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Direktory for label</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QLineEdit" name="le_saveDirectoryLabel"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pb_setSaveDirectoryForLabel">
            <property name="text">
             <string>...</string>
            </property>

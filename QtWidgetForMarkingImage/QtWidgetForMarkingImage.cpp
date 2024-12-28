@@ -28,9 +28,11 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
 
     connect(ui.RB_originalName, SIGNAL(clicked()), this, SLOT(slot_changeSaveNameRB()));
     connect(ui.RB_customName, SIGNAL(clicked()), this, SLOT(slot_changeSaveNameRB()));
-    connect(ui.LE_saveDirectory, SIGNAL(textChanged(QString)), this, SLOT(slot_setSaveDirectory(QString)));
+    connect(ui.le_saveDirectoryImage, SIGNAL(textChanged(QString)), this, SLOT(slot_setSaveDirectoryForImage(QString)));
+    connect(ui.le_saveDirectoryLabel, SIGNAL(textChanged(QString)), this, SLOT(slot_setSaveDirectoryForLabel(QString)));
     connect(ui.LE_sequenceStart, SIGNAL(textChanged(QString)), this, SLOT(slot_changeStartIterator(QString)));
-    connect(ui.PB_setSaveDirectory, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectory()));
+    connect(ui.pb_setSaveDirectoryForImage, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectoryForImage()));
+    connect(ui.pb_setSaveDirectoryForLabel, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectoryForLabel()));
 
     connect(ui.widgetForImage, &QtGuiDisplay::newActivFigure, this, &QtWidgetForMarkingImage::slot_setActivMarkupObject);
 }
@@ -96,12 +98,12 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
             
             size_t found{ dirictoriName.toStdString().find_last_of(".") };
             QString fileName{ QString::fromStdString(dirictoriName.toStdString().erase(found, dirictoriName.size() - 1)) + ".txt" };
-            if (!saveDirektory.isNull())
+            if (!saveDirektoryForLabel.isNull())
             {
                 found = fileName.toStdString().find_last_of("/\\");
                 fileName = QString::fromStdString(fileName.toStdString().substr(found + 1));
                 QString fileNameBufer{ fileName };
-                fileName = saveDirektory + '/' + fileNameBufer;
+                fileName = saveDirektoryForLabel + '/' + fileNameBufer;
             }
             
             loadMarking(fileName.toStdString());
@@ -123,8 +125,9 @@ void QtWidgetForMarkingImage::resizeActivImage()
 
 void QtWidgetForMarkingImage::saveMarking()
 {
-    std::string saveName{ setSaveName() };
-    std::ofstream objectCoordinate(saveName + ".txt", std::ios_base::out | std::ios_base::trunc);
+    std::string saveNameForImage{ setSaveNameForImage() };
+    std::string saveNameForLabel{ setSaveNameForLabel(saveNameForImage) };
+    std::ofstream objectCoordinate(saveNameForLabel, std::ios_base::out | std::ios_base::trunc);
     FigureRectangle* limitRect{};
     
     cv::Size imageSize{ activImage_.getMat().size() };
@@ -134,7 +137,7 @@ void QtWidgetForMarkingImage::saveMarking()
         objectCoordinate << markupObjects_[i].getClass() + 1 << " " << static_cast<float>(limitRect->getWidth() / 2 + limitRect->getX()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth() / 2 + limitRect->getY()) / imageSize.height
             << " " << static_cast<float>(limitRect->getWidth()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth()) / imageSize.height << " " << markupObjects_[i].getType() << std::endl;
     }
-    cv::imwrite(saveName + ".png", activImage_.getMat());
+    cv::imwrite(saveNameForImage, activImage_.getMat());
     objectCoordinate.close();
 }
 
@@ -175,7 +178,7 @@ void QtWidgetForMarkingImage::slot_changeSizeRB()
     setActivImage(activImageId);
 }
 
-std::string QtWidgetForMarkingImage::setSaveName()
+std::string QtWidgetForMarkingImage::setSaveNameForImage()
 {
     QString saveName{};
     if (setCustomName)
@@ -198,9 +201,26 @@ std::string QtWidgetForMarkingImage::setSaveName()
         found = saveName.toStdString().find_last_of(".");
         saveName = QString::fromStdString(saveName.toStdString().erase(found, saveName.size()-1));
     }
-    if(saveDirektory!="")
-        saveName = saveDirektory + QString("/") + saveName;
+    if (!saveDirektoryForImage.isNull())
+        saveName = saveDirektoryForImage + QString("/") + saveName;
+    saveName += QString(".png");
     return saveName.toStdString();
+}
+
+std::string QtWidgetForMarkingImage::setSaveNameForLabel(const std::string& imageName)
+{
+    std::string saveName{ imageName };
+    std::size_t found{ imageName.find_last_of(".") };
+    saveName.erase(found, saveName.size() - 1);
+
+    if (!saveDirektoryForLabel.isNull())
+    {
+        found = saveName.find_last_of("/\\");
+        saveName.erase(0, found);
+        saveName = saveDirektoryForLabel.toStdString() + saveName;
+    }
+    saveName += ".txt";
+    return saveName;
 }
 
 void QtWidgetForMarkingImage::loadClassifirs()
@@ -366,11 +386,20 @@ void QtWidgetForMarkingImage::slot_markingAndSaveImage()
         slot_nextImage();
 }
 
-void QtWidgetForMarkingImage::slot_chooseSaveDirectory()
+void QtWidgetForMarkingImage::slot_chooseSaveDirectoryForImage()
 {
     QFileDialog fd{};
-    QString directoryName{ fd.getExistingDirectory(this, "Marked dataset", "") };
-    ui.LE_saveDirectory->setText(directoryName);
+    QString directoryName{ fd.getExistingDirectory(this, "Marked images", "") };
+    ui.le_saveDirectoryImage->setText(directoryName);
+    if(ui.le_saveDirectoryLabel->text().size() ==0 )
+        ui.le_saveDirectoryLabel->setText(directoryName);
+}
+
+void QtWidgetForMarkingImage::slot_chooseSaveDirectoryForLabel()
+{
+    QFileDialog fd{};
+    QString directoryName{ fd.getExistingDirectory(this, "Image's label", "") };
+    ui.le_saveDirectoryLabel->setText(directoryName);
 }
 
 void QtWidgetForMarkingImage::slot_changeStartIterator(QString start)
@@ -378,9 +407,14 @@ void QtWidgetForMarkingImage::slot_changeStartIterator(QString start)
     sequenceIterator = start.toInt();
 }
 
-void QtWidgetForMarkingImage::slot_setSaveDirectory(QString directory)
+void QtWidgetForMarkingImage::slot_setSaveDirectoryForImage(QString directory)
 {
-    saveDirektory = directory;
+    saveDirektoryForImage = directory;
+}
+
+void QtWidgetForMarkingImage::slot_setSaveDirectoryForLabel(QString directory)
+{
+    saveDirektoryForLabel = directory;
 }
 
 void QtWidgetForMarkingImage::slot_delRect()
