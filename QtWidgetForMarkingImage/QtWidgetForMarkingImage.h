@@ -24,6 +24,7 @@ class QtWidgetForMarkingImage : public QWidget
     bool setCustomSize{};
     bool setCustomName{};
     float activPenScale{ 1.0 };
+    bool isUpdateImage{ true };
 
     QString saveDirektoryForImage{};
     QString saveDirektoryForLabel{};

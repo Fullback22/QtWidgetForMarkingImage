@@ -15,8 +15,8 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     connect(ui.PB_nextImage, SIGNAL(clicked()), this, SLOT(slot_nextImage()));
 
     connect(ui.cb_classes, &QComboBox::currentTextChanged, this, &QtWidgetForMarkingImage::slot_changeTypes);
-    connect(ui.PB_changeClassLabel, SIGNAL(clicked()), this, SLOT(slot_changeClassLabel()));
-    connect(ui.pb_changeType, SIGNAL(clicked()), this, SLOT(slot_changeTypeLabel()));
+    //connect(ui.PB_changeClassLabel, SIGNAL(clicked()), this, SLOT(slot_changeClassLabel()));
+    //connect(ui.pb_changeType, SIGNAL(clicked()), this, SLOT(slot_changeTypeLabel()));
     connect(ui.PB_addRectangel, SIGNAL(clicked()), this, SLOT(slot_addMarkupObject()));
     connect(ui.PB_deleteRectangel, SIGNAL(clicked()), this, SLOT(slot_delRect()));
     connect(ui.PB_markingImage, SIGNAL(clicked()), this, SLOT(slot_markingAndSaveImage()));
@@ -35,6 +35,12 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     connect(ui.pb_setSaveDirectoryForLabel, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectoryForLabel()));
 
     connect(ui.widgetForImage, &QtGuiDisplay::newActivFigure, this, &QtWidgetForMarkingImage::slot_setActivMarkupObject);
+
+    connect(ui.cb_classes, qOverload<int>(&QComboBox::currentIndexChanged), this, &QtWidgetForMarkingImage::slot_changeClassLabel);
+    connect(ui.cb_types, qOverload<int>(&QComboBox::currentIndexChanged), this, &QtWidgetForMarkingImage::slot_changeTypeLabel);
+
+    ui.pb_changeType->hide();
+    ui.PB_changeClassLabel->hide();
 }
 
 QtWidgetForMarkingImage::~QtWidgetForMarkingImage()
@@ -76,6 +82,7 @@ void QtWidgetForMarkingImage::initScrollArea_withImageName(QStringList& const im
 
 void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
 {
+    isUpdateImage = true;
     for (; markupObjects_.size() > 0;)
     {
         slot_delRect();
@@ -109,6 +116,7 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
             loadMarking(fileName.toLocal8Bit().toStdString());
         }
     }
+    isUpdateImage = false;
 }
 
 void QtWidgetForMarkingImage::resizeActivImage()
@@ -446,7 +454,7 @@ void QtWidgetForMarkingImage::slot_delRect()
 
 void QtWidgetForMarkingImage::slot_changeClassLabel()
 {
-    if (activMarkupObject_ != -1)
+    if (activMarkupObject_ != -1 && !isUpdateImage)
     {
         markupObjects_[activMarkupObject_].setClass(ui.cb_classes->currentIndex());
         markupObjects_[activMarkupObject_].setType(0);
@@ -484,7 +492,7 @@ void QtWidgetForMarkingImage::slot_changeTypes(const QString& className)
 
 void QtWidgetForMarkingImage::slot_changeTypeLabel()
 {
-    if (activMarkupObject_ != -1)
+    if (activMarkupObject_ != -1 && !isUpdateImage)
     {
         markupObjects_[activMarkupObject_].setType(ui.cb_types->currentIndex());
     }
