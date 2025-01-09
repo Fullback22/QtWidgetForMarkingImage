@@ -86,7 +86,7 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
         newLabel[newActivImageId].setStyleSheet("border : 1px solid red;");
         activImageId = newActivImageId;
         QString dirictoriName{ newLabel[newActivImageId].getImageName() };
-        cv::Mat buferImage{ cv::imread(dirictoriName.toStdString()) };
+        cv::Mat buferImage{ cv::imread(dirictoriName.toLocal8Bit().toStdString()) };
         if (!buferImage.empty())
         {
             activImage_.updateFrame(buferImage);
@@ -106,7 +106,7 @@ void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
                 fileName = saveDirektoryForLabel + '/' + fileNameBufer;
             }
             
-            loadMarking(fileName.toStdString());
+            loadMarking(fileName.toLocal8Bit().toStdString());
         }
     }
 }
@@ -204,7 +204,7 @@ std::string QtWidgetForMarkingImage::setSaveNameForImage()
     if (!saveDirektoryForImage.isNull())
         saveName = saveDirektoryForImage + QString("/") + saveName;
     saveName += QString(".png");
-    return saveName.toStdString();
+    return saveName.toLocal8Bit().toStdString();
 }
 
 std::string QtWidgetForMarkingImage::setSaveNameForLabel(const std::string& imageName)
@@ -217,7 +217,7 @@ std::string QtWidgetForMarkingImage::setSaveNameForLabel(const std::string& imag
     {
         found = saveName.find_last_of("/\\");
         saveName.erase(0, found);
-        saveName = saveDirektoryForLabel.toStdString() + saveName;
+        saveName = saveDirektoryForLabel.toLocal8Bit().toStdString() + saveName;
     }
     saveName += ".txt";
     return saveName;

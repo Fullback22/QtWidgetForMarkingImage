@@ -88,3 +88,13 @@
 28.12 - 12:28:58	app start
 28.12 - 12:28:58	classifire load
 28.12 - 12:31:36	app stop
+8.1 - 14:1:27	app start
+8.1 - 14:1:28	classifire load
+9.1 - 7:27:33	app start
+9.1 - 7:27:33	classifire load
+9.1 - 7:28:13	app stop
+9.1 - 7:30:27	app start
+9.1 - 7:30:28	classifire load
+9.1 - 7:31:0	app stop
+9.1 - 7:38:22	app start
+9.1 - 7:38:23	classifire load
