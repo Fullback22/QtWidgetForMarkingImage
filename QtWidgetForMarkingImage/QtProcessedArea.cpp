@@ -43,7 +43,7 @@ QtProcessedArea::QtProcessedArea(QtProcessedArea&& drop):
 
 QtProcessedArea::~QtProcessedArea()
 {
-	//delete lineColor;
+
 }
 
 void QtProcessedArea::createMaster(cv::Mat const* inputImg)

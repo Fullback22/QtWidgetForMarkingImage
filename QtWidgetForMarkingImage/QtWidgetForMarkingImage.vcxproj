@@ -14,7 +14,7 @@
     <ProjectGuid>{041F4DF6-585B-4763-B9FC-A642C2CABF56}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
-    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.18362.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -57,8 +57,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -67,15 +65,6 @@
     <Link>
       <AdditionalLibraryDirectories>C:\opencv15\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);opencv_world440d.lib</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);C:\opencv15\opencv\build\include</AdditionalIncludeDirectories>
-    </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>C:\opencv15\opencv\build\x64\vc15\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);opencv_world440.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">

@@ -21,9 +21,6 @@ myLabel::myLabel(QWidget *parent) :QLabel(parent)
 
 myLabel::~myLabel()
 {
-	//delete[] _scaled;
-	//delete myPixmap_bufer;
-	//delete myPixmap_mouve;
 }
 
 void myLabel::toImgCoordinate(int &inOutX, int &inOutY, bool isContains)
@@ -128,6 +125,34 @@ QPoint myLabel::getFirstImagePoint()
 	return QPoint(f_x_pixMap,f_y_pixMap);
 }
 
+//void myLabel::formatImage(int formatType)
+//{
+//	if (imageFormat == formatType)
+//	{
+//
+//	}
+//	else
+//	{
+//		if (formatType == 0)
+//		{
+//			my_Pixmap = my_PixmapOriginal;
+//			//my_Pixmap = my_Pixmap.scaled(scaledSize);
+//			delete myPixmap_bufer;
+//			myPixmap_bufer = new QPixmap(my_Pixmap);
+//		}
+//		else if (formatType == 1)
+//		{
+//			QImage buferImg(my_Pixmap.toImage());
+//			buferImg = buferImg.convertToFormat(QImage::Format_Grayscale8);
+//			buferImg = buferImg.convertToFormat(QImage::Format_RGB32);
+//			delete myPixmap_bufer;
+//			myPixmap_bufer = new QPixmap(QPixmap::fromImage(buferImg));
+//			my_Pixmap = *myPixmap_bufer;
+//		}
+//		imageFormat = formatType;
+//	}
+//}
+
 void myLabel::update_myPixmap(const QPixmap& img)
 {
 	my_Pixmap = img;
@@ -138,7 +163,8 @@ void myLabel::update_myPixmap(const QPixmap& img)
 	scalCoef_H = static_cast<double>(this->height()) / originalSize.height();
 	delete myPixmap_bufer;
 	myPixmap_bufer = new QPixmap(my_Pixmap);
-	
+	//delete myPixmap_mouve;
+	//myPixmap_mouve = new QPixmap(my_Pixmap.copy(drPoint.x(), drPoint.y(), this->width(), this->height()));
 	setAllImgScaled();
 	this->scaledPixmap();
 }

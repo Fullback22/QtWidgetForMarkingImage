@@ -24,7 +24,7 @@ class QtWidgetForMarkingImage : public QWidget
     int sequenceIterator{ 0 };
 public:
     QtWidgetForMarkingImage(QWidget *parent = Q_NULLPTR);
-    ~QtWidgetForMarkingImage();
+
 private:
     Ui::QtWidgetForMarkingImageClass ui;
     void initScrollArea_withImageName(QStringList& const imageNames);

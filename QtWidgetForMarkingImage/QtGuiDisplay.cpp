@@ -81,7 +81,6 @@ QtGuiDisplay::QtGuiDisplay(QWidget *parent)
 
 QtGuiDisplay::~QtGuiDisplay()
 {
-	//delete activProcessedObj;
 }
 
 void QtGuiDisplay::setSizeScrollBar()
