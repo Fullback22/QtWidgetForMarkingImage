@@ -143,7 +143,7 @@ void QtWidgetForMarkingImage::saveMarking()
     {
         limitRect = markupObjects_[i].position;
         objectCoordinate << markupObjects_[i].getClass() + 1 << " " << static_cast<float>(limitRect->getWidth() / 2 + limitRect->getX()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth() / 2 + limitRect->getY()) / imageSize.height
-            << " " << static_cast<float>(limitRect->getWidth()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth()) / imageSize.height << " " << markupObjects_[i].getType() << std::endl;
+            << " " << static_cast<float>(limitRect->getWidth()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth()) / imageSize.height << std::endl;
     }
     cv::imwrite(saveNameForImage, activImage_.getMat());
     objectCoordinate.close();
