@@ -1,0 +1,27 @@
+1.2 - 21:51:29	app start
+1.2 - 21:51:29	File classes/classes.txt not found
+1.2 - 21:52:39	app stop
+1.2 - 21:58:48	app start
+1.2 - 21:58:48	File classes/classes.txt not found
+1.2 - 22:0:5	app stop
+1.2 - 22:0:8	app start
+1.2 - 22:0:8	classifire load
+1.2 - 22:16:18	app stop
+2.2 - 12:50:56	app start
+2.2 - 12:50:56	classifire load
+2.2 - 14:40:49	app stop
+2.2 - 15:51:53	app start
+2.2 - 15:51:53	classifire load
+2.2 - 15:53:46	app stop
+2.2 - 16:3:20	app start
+2.2 - 16:3:21	classifire load
+2.2 - 16:45:46	app stop
+2.2 - 18:34:20	app start
+2.2 - 18:34:20	classifire load
+2.2 - 18:59:25	app stop
+2.2 - 19:38:17	app start
+2.2 - 19:38:17	classifire load
+2.2 - 19:50:22	app stop
+2.2 - 19:58:48	app start
+2.2 - 19:58:48	classifire load
+2.2 - 20:13:34	app stop

@@ -5,18 +5,19 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
     setCustomSize{false},
     setCustomName{false}
 {
+    LOG.logMessege("app start", LogLevel::_INFO_);
     ui.setupUi(this);
-    
-    ui.spinBox_classLabel->setMaximum(3 * classInOneColor);
-    labelColor = setClassColor();
-
+    loadClassifirs();
+   
+    connect(ui.widgetForImage, &QtGuiDisplay::newActivScale, this, &QtWidgetForMarkingImage::slot_updateScale);
     connect(ui.PB_chooseImage, SIGNAL(clicked()), this, SLOT(slot_chooseImageName()));
     connect(ui.PB_previousImage, SIGNAL(clicked()), this, SLOT(slot_previousImage()));
     connect(ui.PB_nextImage, SIGNAL(clicked()), this, SLOT(slot_nextImage()));
 
-    connect(ui.spinBox_classLabel, SIGNAL(valueChanged(int)), this, SLOT(slot_setNewClassLabel(int)));
-    connect(ui.PB_changeClassLabel, SIGNAL(clicked()), this, SLOT(slot_changeClassLabel()));
-    connect(ui.PB_addRectangel, SIGNAL(clicked()), this, SLOT(slot_addRect()));
+    connect(ui.cb_classes, &QComboBox::currentTextChanged, this, &QtWidgetForMarkingImage::slot_changeTypes);
+    //connect(ui.PB_changeClassLabel, SIGNAL(clicked()), this, SLOT(slot_changeClassLabel()));
+    //connect(ui.pb_changeType, SIGNAL(clicked()), this, SLOT(slot_changeTypeLabel()));
+    connect(ui.PB_addRectangel, SIGNAL(clicked()), this, SLOT(slot_addMarkupObject()));
     connect(ui.PB_deleteRectangel, SIGNAL(clicked()), this, SLOT(slot_delRect()));
     connect(ui.PB_markingImage, SIGNAL(clicked()), this, SLOT(slot_markingAndSaveImage()));
 
@@ -27,9 +28,26 @@ QtWidgetForMarkingImage::QtWidgetForMarkingImage(QWidget *parent)
 
     connect(ui.RB_originalName, SIGNAL(clicked()), this, SLOT(slot_changeSaveNameRB()));
     connect(ui.RB_customName, SIGNAL(clicked()), this, SLOT(slot_changeSaveNameRB()));
-    connect(ui.LE_saveDirectory, SIGNAL(textChanged(QString)), this, SLOT(slot_setSaveDirectory(QString)));
+    connect(ui.le_saveDirectoryImage, SIGNAL(textChanged(QString)), this, SLOT(slot_setSaveDirectoryForImage(QString)));
+    connect(ui.le_saveDirectoryLabel, SIGNAL(textChanged(QString)), this, SLOT(slot_setSaveDirectoryForLabel(QString)));
     connect(ui.LE_sequenceStart, SIGNAL(textChanged(QString)), this, SLOT(slot_changeStartIterator(QString)));
-    connect(ui.PB_setSaveDirectory, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectory()));
+    connect(ui.pb_setSaveDirectoryForImage, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectoryForImage()));
+    connect(ui.pb_setSaveDirectoryForLabel, SIGNAL(clicked()), this, SLOT(slot_chooseSaveDirectoryForLabel()));
+
+    connect(ui.widgetForImage, &QtGuiDisplay::newActivFigure, this, &QtWidgetForMarkingImage::slot_setActivMarkupObject);
+
+    connect(ui.cb_classes, qOverload<int>(&QComboBox::currentIndexChanged), this, &QtWidgetForMarkingImage::slot_changeClassLabel);
+    connect(ui.cb_types, qOverload<int>(&QComboBox::currentIndexChanged), this, &QtWidgetForMarkingImage::slot_changeTypeLabel);
+
+    ui.pb_changeType->hide();
+    ui.PB_changeClassLabel->hide();
+}
+
+QtWidgetForMarkingImage::~QtWidgetForMarkingImage()
+{
+    delete[] newLabel;
+    newLabel = nullptr;
+    LOG.logMessege("app stop", LogLevel::_INFO_);
 }
 
 void QtWidgetForMarkingImage::slot_chooseImageName()
@@ -41,6 +59,10 @@ void QtWidgetForMarkingImage::slot_chooseImageName()
 
 void QtWidgetForMarkingImage::initScrollArea_withImageName(QStringList& const imageNames)
 {
+    delete[] newLabel;
+    newLabel = nullptr;
+    quantityImage = 0;
+    activImageId = 0;
     newLabel = new QtWidgetsImageName[imageNames.size()];
     quantityImage = imageNames.size();
     for (size_t i{ 0 }; i < quantityImage; ++i)
@@ -60,22 +82,41 @@ void QtWidgetForMarkingImage::initScrollArea_withImageName(QStringList& const im
 
 void QtWidgetForMarkingImage::setActivImage(int const newActivImageId)
 {
+    isUpdateImage = true;
+    for (; markupObjects_.size() > 0;)
+    {
+        slot_delRect();
+    }
     if (quantityImage > 0)
     {
         newLabel[activImageId].setStyleSheet("");
         newLabel[newActivImageId].setStyleSheet("border : 1px solid red;");
         activImageId = newActivImageId;
         QString dirictoriName{ newLabel[newActivImageId].getImageName() };
-        cv::Mat buferImage{ cv::imread(dirictoriName.toStdString()) };
+        cv::Mat buferImage{ cv::imread(dirictoriName.toLocal8Bit().toStdString()) };
         if (!buferImage.empty())
         {
-            buferImage.copyTo(activImage);
+            activImage_.updateFrame(buferImage);
+            activImage_.setStatusFrame(false);
             if (setCustomSize)
                 resizeActivImage();
-            ui.widgetForImage->setNewImage(activImage);
-            ui.widgetForImage->updateImg();
+            ui.widgetForImage->setActivFrame(activImage_);
+            ui.widgetForImage->updateImage();
+            
+            size_t found{ dirictoriName.toStdString().find_last_of(".") };
+            QString fileName{ QString::fromStdString(dirictoriName.toStdString().erase(found, dirictoriName.size() - 1)) + ".txt" };
+            if (!saveDirektoryForLabel.isNull())
+            {
+                found = fileName.toStdString().find_last_of("/\\");
+                fileName = QString::fromStdString(fileName.toStdString().substr(found + 1));
+                QString fileNameBufer{ fileName };
+                fileName = saveDirektoryForLabel + '/' + fileNameBufer;
+            }
+            
+            loadMarking(fileName.toLocal8Bit().toStdString());
         }
     }
+    isUpdateImage = false;
 }
 
 void QtWidgetForMarkingImage::resizeActivImage()
@@ -84,46 +125,27 @@ void QtWidgetForMarkingImage::resizeActivImage()
     {
         QString newHeigth{ ui.LE_newHeigth->text() };
         QString newWidth{ ui.LE_newWidth->text() };
-        cv::resize(activImage, activImage, cv::Size(newWidth.toInt(), newHeigth.toInt()));
+        cv::Mat buferImage{ activImage_.getMat() };
+        cv::resize(buferImage, buferImage, cv::Size(newWidth.toInt(), newHeigth.toInt()));
+        activImage_.updateFrame(buferImage);
     }
-}
-
-QColor QtWidgetForMarkingImage::setClassColor()
-{
-    int r{ 0 };
-    int g{ 0 };
-    int b{ 0 };
-    int classsLabel{ ui.spinBox_classLabel->value() };
-    if (classsLabel / classInOneColor == 0)
-    {
-        r = (classsLabel ) * stepColor;
-    }
-    else if (classsLabel / classInOneColor == 1)
-    {
-        r = 125;
-        g = (classsLabel - classInOneColor) * stepColor;
-    }
-    else if (classsLabel / classInOneColor >= 2)
-    {
-        r = 125;
-        b = (classsLabel - classInOneColor * 2) * stepColor;
-    }    
-    return QColor(r, g, b);
 }
 
 void QtWidgetForMarkingImage::saveMarking()
 {
-    std::string saveName{ setSaveName() };
-    std::ofstream objectCoordinate(saveName + ".txt", std::ios_base::out | std::ios_base::trunc);
-    std::vector<QRect> limitRect;
-    std::vector<int> classLabel;
-    ui.widgetForImage->getClsaaRectangelAndLabel(limitRect, classLabel);
-    for (size_t i{ 0 }; i < limitRect.size(); ++i)
+    std::string saveNameForImage{ setSaveNameForImage() };
+    std::string saveNameForLabel{ setSaveNameForLabel(saveNameForImage) };
+    std::ofstream objectCoordinate(saveNameForLabel, std::ios_base::out | std::ios_base::trunc);
+    FigureRectangle* limitRect{};
+    
+    cv::Size imageSize{ activImage_.getMat().size() };
+    for (size_t i{ }; i < markupObjects_.size(); ++i)
     {
-        objectCoordinate << classLabel[i] << " " << static_cast<float>(limitRect[i].center().x()) << " " << static_cast<float>(limitRect[i].center().y()) 
-            << " " << static_cast<float>(limitRect[i].width()) << " " << static_cast<float>(limitRect[i].height()) << std::endl;
+        limitRect = markupObjects_[i].position;
+        objectCoordinate << markupObjects_[i].getClass() + 1 << " " << static_cast<float>(limitRect->getWidth() / 2 + limitRect->getX()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth() / 2 + limitRect->getY()) / imageSize.height
+            << " " << static_cast<float>(limitRect->getWidth()) / imageSize.width << " " << static_cast<float>(limitRect->getHeidth()) / imageSize.height << std::endl;
     }
-    cv::imwrite(saveName + ".jpg", activImage);
+    cv::imwrite(saveNameForImage, activImage_.getMat());
     objectCoordinate.close();
 }
 
@@ -164,7 +186,7 @@ void QtWidgetForMarkingImage::slot_changeSizeRB()
     setActivImage(activImageId);
 }
 
-std::string QtWidgetForMarkingImage::setSaveName()
+std::string QtWidgetForMarkingImage::setSaveNameForImage()
 {
     QString saveName{};
     if (setCustomName)
@@ -187,9 +209,131 @@ std::string QtWidgetForMarkingImage::setSaveName()
         found = saveName.toStdString().find_last_of(".");
         saveName = QString::fromStdString(saveName.toStdString().erase(found, saveName.size()-1));
     }
-    if(saveDirektory!="")
-        saveName = saveDirektory + QString("/") + saveName;
-    return saveName.toStdString();
+    if (!saveDirektoryForImage.isNull())
+        saveName = saveDirektoryForImage + QString("/") + saveName;
+    saveName += QString(".png");
+    return saveName.toLocal8Bit().toStdString();
+}
+
+std::string QtWidgetForMarkingImage::setSaveNameForLabel(const std::string& imageName)
+{
+    std::string saveName{ imageName };
+    std::size_t found{ imageName.find_last_of(".") };
+    saveName.erase(found, saveName.size() - 1);
+
+    if (!saveDirektoryForLabel.isNull())
+    {
+        found = saveName.find_last_of("/\\");
+        saveName.erase(0, found);
+        saveName = saveDirektoryForLabel.toLocal8Bit().toStdString() + saveName;
+    }
+    saveName += ".txt";
+    return saveName;
+}
+
+void QtWidgetForMarkingImage::loadClassifirs()
+{
+    try {
+        classLabels.setClassifier("classes/classes.txt");
+        for (size_t i{}; i < classLabels.size(); ++i)
+        {
+            ui.cb_classes->addItem(QString::fromLocal8Bit(classLabels[i].c_str()));
+            typeClasses[classLabels[i]].setClassifier("classes/" + classLabels[i] + ".txt");
+        }
+        ui.cb_types->clear();
+        for (size_t i{}; i < typeClasses[classLabels[ui.cb_classes->currentIndex()]].size(); ++i)
+        {
+            ui.cb_types->addItem(QString::fromLocal8Bit(typeClasses[classLabels[ui.cb_classes->currentIndex()]][i].c_str()));
+        }
+        LOG.logMessege("classifire load", LogLevel::_INFO_);
+    }
+    catch (std::string err)
+    {
+        LOG.logMessege(err, LogLevel::_ERROR_);
+    }
+}
+
+void QtWidgetForMarkingImage::parsLineToOjectParams(const std::string& line, MarkupObject& object)
+{
+    std::stringstream ss(line);
+    std::string temp;
+    int i{ 0 };
+    cv::Rect2f bbox{};
+    while (std::getline(ss, temp, ' '))
+    {
+        switch (i)
+        {
+        case 0:
+        {
+            int classId{ std::atoi(temp.c_str()) - 1 };
+            object.setClass(classId);
+            ui.cb_classes->setCurrentIndex(classId);
+            break;
+        }
+        case 1:
+        {
+            bbox.x = std::atof(temp.c_str());
+            break;
+        }
+        case 2:
+        {
+            bbox.y = std::atof(temp.c_str());
+            break;
+        }
+        case 3:
+        {
+            bbox.width = std::atof(temp.c_str());
+            break;
+        }
+        case 4:
+        {
+            bbox.height = std::atof(temp.c_str());
+            break;
+        }
+        case 5:
+        {
+            int typeId{ std::atoi(temp.c_str()) };
+            object.setType(typeId);
+            ui.cb_types->setCurrentIndex(typeId);
+            break;
+        }
+        }
+        ++i;
+    }
+    convertBboxToAbsluteCoordinate(bbox, activImage_.getMat().size());
+    object.position->setRectangle(bbox.x, bbox.y, bbox.width, bbox.height);
+}
+
+void QtWidgetForMarkingImage::convertBboxToAbsluteCoordinate(cv::Rect2f& inputRect, const cv::Size2i imageSize)
+{
+    inputRect.width *= imageSize.width;
+    inputRect.height *= imageSize.height;
+    inputRect.x = inputRect.x * imageSize.width - inputRect.width / 2.0;
+    inputRect.y = inputRect.y * imageSize.height - inputRect.height / 2.0;
+}
+
+void QtWidgetForMarkingImage::loadMarking(const std::string& fileName)
+{
+    std::ifstream fileWithMarks{ fileName, std::ios::in };
+    if (fileWithMarks.is_open())
+    {
+        std::string line{};
+        while (std::getline(fileWithMarks, line))
+        {
+            activMarkupObject_ = markupObjects_.size();
+            markupObjects_.push_back(MarkupObject());
+            markupObjects_[activMarkupObject_].setPenScale(activPenScale);
+            ui.widgetForImage->addRectangel(markupObjects_[activMarkupObject_].position);
+            parsLineToOjectParams(line, markupObjects_[activMarkupObject_]);
+        }
+        if (markupObjects_.size() > 0)
+        {
+            ui.PB_deleteRectangel->setEnabled(true);
+            markupObjects_[activMarkupObject_].setActiv(true);
+            ui.widgetForImage->setActivFigure(activMarkupObject_);
+        }
+        fileWithMarks.close();
+    }
 }
 
 void QtWidgetForMarkingImage::slot_changeSaveNameRB()
@@ -224,9 +368,23 @@ void QtWidgetForMarkingImage::slot_activateImage(int i)
     setActivImage(i);
 }
 
-void QtWidgetForMarkingImage::slot_addRect()
+void QtWidgetForMarkingImage::slot_addMarkupObject()
 {
-    ui.widgetForImage->add_rect(ui.spinBox_classLabel->value(), &labelColor);
+    if (activMarkupObject_ != -1)
+        markupObjects_[activMarkupObject_].setActiv(false);
+    activMarkupObject_ = markupObjects_.size();
+    markupObjects_.push_back(MarkupObject());
+    markupObjects_[activMarkupObject_].setPenScale(activPenScale);
+    
+    markupObjects_[activMarkupObject_].setClass(ui.cb_classes->currentIndex());
+    markupObjects_[activMarkupObject_].setType(ui.cb_types->currentIndex());
+    markupObjects_[activMarkupObject_].setActiv(true);
+
+    ui.widgetForImage->addRectangel(markupObjects_[activMarkupObject_].position);
+    ui.widgetForImage->setActivFigure(activMarkupObject_);
+
+    if (activMarkupObject_ == 0)
+        ui.PB_deleteRectangel->setEnabled(true);
 }
 
 void QtWidgetForMarkingImage::slot_markingAndSaveImage()
@@ -236,11 +394,20 @@ void QtWidgetForMarkingImage::slot_markingAndSaveImage()
         slot_nextImage();
 }
 
-void QtWidgetForMarkingImage::slot_chooseSaveDirectory()
+void QtWidgetForMarkingImage::slot_chooseSaveDirectoryForImage()
 {
     QFileDialog fd{};
-    QString directoryName{ fd.getExistingDirectory(this, "Marked dataset", "") };
-    ui.LE_saveDirectory->setText(directoryName);
+    QString directoryName{ fd.getExistingDirectory(this, "Marked images", "") };
+    ui.le_saveDirectoryImage->setText(directoryName);
+    if(ui.le_saveDirectoryLabel->text().size() ==0 )
+        ui.le_saveDirectoryLabel->setText(directoryName);
+}
+
+void QtWidgetForMarkingImage::slot_chooseSaveDirectoryForLabel()
+{
+    QFileDialog fd{};
+    QString directoryName{ fd.getExistingDirectory(this, "Image's label", "") };
+    ui.le_saveDirectoryLabel->setText(directoryName);
 }
 
 void QtWidgetForMarkingImage::slot_changeStartIterator(QString start)
@@ -248,27 +415,94 @@ void QtWidgetForMarkingImage::slot_changeStartIterator(QString start)
     sequenceIterator = start.toInt();
 }
 
-void QtWidgetForMarkingImage::slot_setSaveDirectory(QString directory)
+void QtWidgetForMarkingImage::slot_setSaveDirectoryForImage(QString directory)
 {
-    saveDirektory = directory;
+    saveDirektoryForImage = directory;
+}
+
+void QtWidgetForMarkingImage::slot_setSaveDirectoryForLabel(QString directory)
+{
+    saveDirektoryForLabel = directory;
 }
 
 void QtWidgetForMarkingImage::slot_delRect()
 {
-    ui.widgetForImage->deletActivRectangel();
+    markupObjects_[activMarkupObject_].position->Delete();
+    markupObjects_.erase(markupObjects_.begin() + activMarkupObject_);
+    ui.widgetForImage->deleteFigure(activMarkupObject_);
+
+    if (activMarkupObject_ == markupObjects_.size() && activMarkupObject_ > 0)
+    {
+        --activMarkupObject_;
+        ui.widgetForImage->setActivFigure(activMarkupObject_);
+    }
+   
+    if (markupObjects_.size() == 0)
+    {
+        ui.PB_deleteRectangel->setDisabled(true);
+        activMarkupObject_ = -1;
+        ui.cb_classes->setCurrentIndex(0);
+    }
+
+    if (activMarkupObject_ >= 0)
+    {
+        ui.cb_classes->setCurrentIndex(markupObjects_[activMarkupObject_].getClass());
+        ui.cb_types->setCurrentIndex(markupObjects_[activMarkupObject_].getType());
+    }
+    ui.widgetForImage->updateImage();
 }
 
 void QtWidgetForMarkingImage::slot_changeClassLabel()
 {
-    ui.widgetForImage->setNewClassLabel(ui.spinBox_classLabel->value(), &labelColor);
-}
-
-void QtWidgetForMarkingImage::slot_setNewClassLabel(int value)
-{
-    labelColor = setClassColor();
+    if (activMarkupObject_ != -1 && !isUpdateImage)
+    {
+        markupObjects_[activMarkupObject_].setClass(ui.cb_classes->currentIndex());
+        markupObjects_[activMarkupObject_].setType(0);
+        ui.widgetForImage->updateImage();
+    }
 }
 
 void QtWidgetForMarkingImage::slot_changeImageSize()
 {
     resizeActivImage();
+}
+
+void QtWidgetForMarkingImage::slot_setActivMarkupObject(int const index)
+{
+    if (index < markupObjects_.size())
+    {
+        markupObjects_[activMarkupObject_].setActiv(false);
+        activMarkupObject_ = index;
+        ui.widgetForImage->setActivFigure(index);
+        ui.cb_classes->setCurrentIndex(markupObjects_[index].getClass());
+        ui.cb_types->setCurrentIndex(markupObjects_[index].getType());
+        markupObjects_[activMarkupObject_].setActiv(true);
+        ui.widgetForImage->updateImage();
+    }
+}
+
+void QtWidgetForMarkingImage::slot_changeTypes(const QString& className)
+{
+    ui.cb_types->clear();
+    for (size_t i{}; i < typeClasses[className.toLocal8Bit().toStdString()].size(); ++i)
+    {
+        ui.cb_types->addItem(QString::fromLocal8Bit(typeClasses[className.toLocal8Bit().toStdString()][i].c_str()));
+    }
+}
+
+void QtWidgetForMarkingImage::slot_changeTypeLabel()
+{
+    if (activMarkupObject_ != -1 && !isUpdateImage)
+    {
+        markupObjects_[activMarkupObject_].setType(ui.cb_types->currentIndex());
+    }
+}
+
+void QtWidgetForMarkingImage::slot_updateScale(float newScale)
+{
+    activPenScale = newScale;
+    for (auto &obj : markupObjects_)
+    {
+        obj.setPenScale(activPenScale);
+    }
 }
