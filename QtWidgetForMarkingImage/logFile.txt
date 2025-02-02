@@ -129,3 +129,6 @@
 2.2 - 19:58:15	app start
 2.2 - 19:58:15	classifire load
 2.2 - 19:58:19	app stop
+2.2 - 22:0:25	app start
+2.2 - 22:0:26	classifire load
+2.2 - 22:0:30	app stop
